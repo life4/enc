@@ -21,6 +21,7 @@ func Command(r io.Reader, w io.Writer) *cobra.Command {
 	c.AddCommand(Encrypt{Stdout: w, Stdin: r}.Command())
 	c.AddCommand(Decrypt{Stdout: w, Stdin: r}.Command())
 	c.AddCommand(Armor{Stdout: w, Stdin: r}.Command())
+	c.AddCommand(Dearmor{Stdout: w, Stdin: r}.Command())
 	return c
 }
 
