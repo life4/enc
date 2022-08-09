@@ -19,6 +19,7 @@ func Command(r io.Reader, w io.Writer) *cobra.Command {
 	}
 	c.AddCommand(Version{w}.Command())
 	c.AddCommand(Encrypt{Stdout: w, Stdin: r}.Command())
+	c.AddCommand(Decrypt{Stdout: w, Stdin: r}.Command())
 	return c
 }
 
