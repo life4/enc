@@ -1,4 +1,4 @@
-package version
+package cmd
 
 import (
 	"errors"
@@ -11,21 +11,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Command(w io.Writer) *cobra.Command {
+type Version struct {
+	Stdout io.Writer
+}
+
+func (v Version) Command() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Print the version number",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return version(w)
+			return v.run()
 		},
 	}
 }
 
-func version(w io.Writer) error {
+func (v Version) run() error {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
 		return errors.New("cannot read build info")
 	}
+	w := v.Stdout
 	fmt.Fprintf(w, "{\n")
 	fmt.Fprintf(w, "  go_version: %#v,\n", info.GoVersion)
 	fmt.Fprintf(w, "  revision:   %#v,\n", getBuildKey(info, "vcs.revision"))
