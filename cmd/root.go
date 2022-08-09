@@ -5,10 +5,11 @@ import (
 	"io"
 	"os"
 
+	"github.com/life4/enc/cmd/version"
 	"github.com/spf13/cobra"
 )
 
-func cmdRoot(w io.Writer) *cobra.Command {
+func Command(w io.Writer) *cobra.Command {
 	r := &cobra.Command{
 		Use:   "enc",
 		Short: "Enc is PGP for humans",
@@ -17,12 +18,12 @@ func cmdRoot(w io.Writer) *cobra.Command {
 			create, add, list, encrypt, decrypt, sign, verify signatures.
 		`,
 	}
-	r.AddCommand(cmdVersion(w))
+	r.AddCommand(version.Command(w))
 	return r
 }
 
 func Main(w io.Writer) error {
-	return cmdRoot(w).Execute()
+	return Command(w).Execute()
 }
 
 func Entrypoint() {

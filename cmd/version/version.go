@@ -1,4 +1,4 @@
-package cmd
+package version
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func cmdVersion(w io.Writer) *cobra.Command {
+func Command(w io.Writer) *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Print the version number",
