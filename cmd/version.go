@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"runtime/debug"
+	"time"
 
+	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +32,7 @@ func version(w io.Writer) error {
 	fmt.Fprintf(w, "  time:       %#v,\n", getBuildKey(info, "vcs.time"))
 	fmt.Fprintf(w, "  os:         %#v,\n", getBuildKey(info, "GOOS"))
 	fmt.Fprintf(w, "  arch:       %#v,\n", getBuildKey(info, "GOARCH"))
+	fmt.Fprintf(w, "  now:        %#v,\n", crypto.GetTime().Format(time.RFC3339))
 	fmt.Fprintf(w, "}\n")
 	return nil
 }
