@@ -17,11 +17,30 @@ func Command(r io.Reader, w io.Writer) *cobra.Command {
 			create, add, list, encrypt, decrypt, sign, verify signatures.
 		`,
 	}
+	// enc version
 	c.AddCommand(Version{Stdout: w}.Command())
+	// enc encrypt
 	c.AddCommand(Encrypt{Stdout: w, Stdin: r}.Command())
+	// enc decrypt
 	c.AddCommand(Decrypt{Stdout: w, Stdin: r}.Command())
+	// enc armor
 	c.AddCommand(Armor{Stdout: w, Stdin: r}.Command())
+	// enc dearmor
 	c.AddCommand(Dearmor{Stdout: w, Stdin: r}.Command())
+
+	// enc key generate
+	// enc key armor
+	// enc key dearmor
+	// enc key lock --pass
+	// enc key unlock --pass
+	// enc key fingerprints
+	// enc key send
+
+	// enc keyring list
+	// enc keyring import
+	// enc keyring export public
+	// enc keyring export private
+	// enc keyring delete
 	return c
 }
 

@@ -8,20 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Input (stdin):
-// + binary file
-// + text file
-// + plain text
-//
 // Keys:
 // + password
 // + key (name, path, binary, or text)
 // + key with passphrase
-//
-// Output (stdout):
-// + binary
-//
-// Armoring should be a separate command.
 
 type Encrypt struct {
 	Stdout   io.Writer

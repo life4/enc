@@ -16,7 +16,7 @@ type Armor struct {
 func (a Armor) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:   "armor",
-		Short: "Convert the message from binary to text",
+		Short: "Convert the message (or key) from binary to text",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return a.run()
 		},
