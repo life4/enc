@@ -17,9 +17,10 @@ func Command(r io.Reader, w io.Writer) *cobra.Command {
 			create, add, list, encrypt, decrypt, sign, verify signatures.
 		`,
 	}
-	c.AddCommand(Version{w}.Command())
+	c.AddCommand(Version{Stdout: w}.Command())
 	c.AddCommand(Encrypt{Stdout: w, Stdin: r}.Command())
 	c.AddCommand(Decrypt{Stdout: w, Stdin: r}.Command())
+	c.AddCommand(Armor{Stdout: w, Stdin: r}.Command())
 	return c
 }
 

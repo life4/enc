@@ -48,6 +48,9 @@ func (e Encrypt) run() error {
 	}
 	message := crypto.NewPlainMessage(data)
 	encrypted, err := crypto.EncryptMessageWithPassword(message, []byte(e.password))
+	if err != nil {
+		return fmt.Errorf("cannot encrypt the message: %v", err)
+	}
 	_, err = e.Stdout.Write(encrypted.GetBinary())
 	return err
 }
