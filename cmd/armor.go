@@ -9,8 +9,7 @@ import (
 )
 
 type Armor struct {
-	Stdout io.Writer
-	Stdin  io.Reader
+	cfg Config
 }
 
 func (a Armor) Command() *cobra.Command {
@@ -25,7 +24,7 @@ func (a Armor) Command() *cobra.Command {
 }
 
 func (e Armor) run() error {
-	data, err := io.ReadAll(e.Stdin)
+	data, err := io.ReadAll(e.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
@@ -34,6 +33,6 @@ func (e Armor) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot armor the message: %v", err)
 	}
-	_, err = e.Stdout.Write([]byte(armored))
+	_, err = e.cfg.Write([]byte(armored))
 	return err
 }

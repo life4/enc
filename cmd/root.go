@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Command(r io.Reader, w io.Writer) *cobra.Command {
-	c := &cobra.Command{
+func Command(cfg Config) *cobra.Command {
+	root := &cobra.Command{
 		Use:   "enc",
 		Short: "Enc is PGP for humans",
 		Long: `
@@ -18,40 +18,41 @@ func Command(r io.Reader, w io.Writer) *cobra.Command {
 		`,
 	}
 	// enc version
-	c.AddCommand(Version{Stdout: w}.Command())
+	root.AddCommand(Version{cfg: cfg}.Command())
 	// enc encrypt
-	c.AddCommand(Encrypt{Stdout: w, Stdin: r}.Command())
+	root.AddCommand(Encrypt{cfg: cfg}.Command())
 	// enc decrypt
-	c.AddCommand(Decrypt{Stdout: w, Stdin: r}.Command())
+	root.AddCommand(Decrypt{cfg: cfg}.Command())
 	// enc armor
-	c.AddCommand(Armor{Stdout: w, Stdin: r}.Command())
+	root.AddCommand(Armor{cfg: cfg}.Command())
 	// enc dearmor
-	c.AddCommand(Dearmor{Stdout: w, Stdin: r}.Command())
+	root.AddCommand(Dearmor{cfg: cfg}.Command())
 
-	kc := &cobra.Command{
+	key := &cobra.Command{
 		Use:   "key",
 		Short: "Operations with a key",
 	}
 	// enc key generate
-	kc.AddCommand(KeyGenerate{Stdout: w}.Command())
+	key.AddCommand(KeyGenerate{cfg: cfg}.Command())
 	// enc key armor
 	// enc key dearmor
 	// enc key lock --pass
 	// enc key unlock --pass
 	// enc key fingerprints
 	// enc key send
-	c.AddCommand(kc)
+	root.AddCommand(key)
 
 	// enc keyring list
 	// enc keyring import
 	// enc keyring export public
 	// enc keyring export private
 	// enc keyring delete
-	return c
+	return root
 }
 
 func Main(args []string, r io.Reader, w io.Writer) error {
-	c := Command(r, w)
+	cfg := Config{Stdin: r, Stdout: w}
+	c := Command(cfg)
 	c.SetArgs(args)
 	return c.Execute()
 }

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
@@ -14,11 +13,11 @@ import (
 // + key with passphrase
 
 type KeyGenerate struct {
-	Stdout io.Writer
-	name   string
-	email  string
-	ktype  string
-	bits   int
+	cfg   Config
+	name  string
+	email string
+	ktype string
+	bits  int
 }
 
 func (g KeyGenerate) Command() *cobra.Command {
@@ -45,6 +44,6 @@ func (g KeyGenerate) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot serialize key: %v", err)
 	}
-	_, err = g.Stdout.Write(b)
+	_, err = g.cfg.Write(b)
 	return err
 }

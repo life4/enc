@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io"
 	"runtime/debug"
 	"time"
 
@@ -12,7 +11,7 @@ import (
 )
 
 type Version struct {
-	Stdout io.Writer
+	cfg Config
 }
 
 func (v Version) Command() *cobra.Command {
@@ -30,7 +29,7 @@ func (v Version) run() error {
 	if !ok {
 		return errors.New("cannot read build info")
 	}
-	w := v.Stdout
+	w := v.cfg
 	fmt.Fprintf(w, "{\n")
 	fmt.Fprintf(w, "  go_version: %#v,\n", info.GoVersion)
 	fmt.Fprintf(w, "  revision:   %#v,\n", getBuildKey(info, "vcs.revision"))

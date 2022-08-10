@@ -10,8 +10,7 @@ import (
 )
 
 type Decrypt struct {
-	Stdout   io.Writer
-	Stdin    io.Reader
+	cfg      Config
 	password string
 }
 
@@ -28,7 +27,7 @@ func (d Decrypt) Command() *cobra.Command {
 }
 
 func (d Decrypt) run() error {
-	data, err := io.ReadAll(d.Stdin)
+	data, err := io.ReadAll(d.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
@@ -45,6 +44,6 @@ func (d Decrypt) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot decrypt the message: %v", err)
 	}
-	_, err = d.Stdout.Write(decrypted.GetBinary())
+	_, err = d.cfg.Write(decrypted.GetBinary())
 	return err
 }

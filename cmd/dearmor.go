@@ -10,8 +10,7 @@ import (
 
 // TODO(gram): a better name
 type Dearmor struct {
-	Stdout io.Writer
-	Stdin  io.Reader
+	cfg Config
 }
 
 func (d Dearmor) Command() *cobra.Command {
@@ -26,7 +25,7 @@ func (d Dearmor) Command() *cobra.Command {
 }
 
 func (d Dearmor) run() error {
-	data, err := io.ReadAll(d.Stdin)
+	data, err := io.ReadAll(d.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
@@ -34,6 +33,6 @@ func (d Dearmor) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot de-armor the message: %v", err)
 	}
-	_, err = d.Stdout.Write(message.GetBinary())
+	_, err = d.cfg.Write(message.GetBinary())
 	return err
 }

@@ -14,8 +14,7 @@ import (
 // + key with passphrase
 
 type Encrypt struct {
-	Stdout   io.Writer
-	Stdin    io.Reader
+	cfg      Config
 	password string
 }
 
@@ -32,7 +31,7 @@ func (e Encrypt) Command() *cobra.Command {
 }
 
 func (e Encrypt) run() error {
-	data, err := io.ReadAll(e.Stdin)
+	data, err := io.ReadAll(e.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
@@ -41,6 +40,6 @@ func (e Encrypt) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot encrypt the message: %v", err)
 	}
-	_, err = e.Stdout.Write(encrypted.GetBinary())
+	_, err = e.cfg.Write(encrypted.GetBinary())
 	return err
 }
