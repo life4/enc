@@ -8,8 +8,11 @@ import (
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 )
 
-func ReadKey(r io.Reader) (*crypto.Key, error) {
-	data, err := io.ReadAll(r)
+func ReadKey(cfg Config) (*crypto.Key, error) {
+	if !cfg.HasStdin() {
+		return nil, fmt.Errorf("no key passed into stdin")
+	}
+	data, err := io.ReadAll(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("read from stdin: %v", err)
 	}

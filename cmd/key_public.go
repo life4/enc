@@ -41,7 +41,7 @@ func (cmd KeyPublic) run() error {
 	}
 	if cmd.armor {
 		s, err := armor.ArmorWithTypeAndCustomHeaders(
-			b, constants.PrivateKeyHeader,
+			b, constants.PublicKeyHeader,
 			ArmorHeaderVersion, ArmorHeaderComment,
 		)
 		if err != nil {

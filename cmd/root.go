@@ -18,15 +18,15 @@ func Command(cfg Config) *cobra.Command {
 		`,
 		SilenceUsage: true, // do not print usage when command return an error
 	}
-	// enc version
+	// $ enc version
 	root.AddCommand(Version{cfg: cfg}.Command())
-	// enc encrypt
+	// $ enc encrypt
 	root.AddCommand(Encrypt{cfg: cfg}.Command())
-	// enc decrypt
+	// $ enc decrypt
 	root.AddCommand(Decrypt{cfg: cfg}.Command())
-	// enc armor
+	// $ enc armor
 	root.AddCommand(Armor{cfg: cfg}.Command())
-	// enc dearmor
+	// $ enc dearmor
 	root.AddCommand(Dearmor{cfg: cfg}.Command())
 
 	key := &cobra.Command{
@@ -34,10 +34,11 @@ func Command(cfg Config) *cobra.Command {
 		Aliases: []string{"k"},
 		Short:   "Operations with a key",
 	}
-	// enc key generate
+	// $ enc key generate
 	key.AddCommand(KeyGenerate{cfg: cfg}.Command())
-	// enc key info
+	// $ enc key info
 	key.AddCommand(KeyInfo{cfg: cfg}.Command())
+	// $ enc key public
 	key.AddCommand(KeyPublic{cfg: cfg}.Command())
 	// enc key armor
 	// enc key dearmor
