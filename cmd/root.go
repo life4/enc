@@ -46,6 +46,7 @@ func Command(cfg Config) *cobra.Command {
 	// enc key unlock --pass
 	// enc key fingerprints
 	// enc key send
+	// enc key revoke
 	root.AddCommand(key)
 
 	// enc keyring list

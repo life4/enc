@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"os/user"
 
 	"github.com/ProtonMail/gopenpgp/v2/armor"
 	"github.com/ProtonMail/gopenpgp/v2/constants"
@@ -36,7 +38,11 @@ func (g KeyGenerate) Command() *cobra.Command {
 }
 
 func (cmd KeyGenerate) run() error {
-	key, err := crypto.GenerateKey(cmd.name, cmd.email, cmd.ktype, cmd.bits)
+	username := cmd.Username()
+	if username == "" {
+		return errors.New("--name is required")
+	}
+	key, err := crypto.GenerateKey(username, cmd.email, cmd.ktype, cmd.bits)
 	if err != nil {
 		return fmt.Errorf("cannot generate key: %v", err)
 	}
@@ -56,4 +62,18 @@ func (cmd KeyGenerate) run() error {
 	}
 	_, err = cmd.cfg.Write(b)
 	return err
+}
+
+func (cmd KeyGenerate) Username() string {
+	if cmd.name != "" {
+		return cmd.name
+	}
+	user, err := user.Current()
+	if err == nil {
+		if user.Name != "" {
+			return user.Name
+		}
+		return user.Username
+	}
+	return ""
 }

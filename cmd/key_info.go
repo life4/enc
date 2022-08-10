@@ -27,12 +27,16 @@ func (cmd KeyInfo) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot read key: %v", err)
 	}
+	ident := key.GetEntity().PrimaryIdentity()
 	w := cmd.cfg
 	fmt.Fprintf(w, "{\n")
 
 	// strings
 	fmt.Fprintf(w, "  id: %#v,\n", key.GetHexKeyID())
 	fmt.Fprintf(w, "  fingerprint: %#v,\n", key.GetFingerprint())
+	fmt.Fprintf(w, "  name: %#v,\n", ident.UserId.Name)
+	fmt.Fprintf(w, "  email: %#v,\n", ident.UserId.Email)
+	fmt.Fprintf(w, "  comment: %#v,\n", ident.UserId.Comment)
 
 	// flags
 	fmt.Fprintf(w, "  is_private: %#v,\n", key.IsPrivate())
