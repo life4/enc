@@ -30,7 +30,7 @@ func (e Armor) run() error {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
 	message := crypto.NewPGPMessage(data)
-	armored, err := message.GetArmored()
+	armored, err := message.GetArmoredWithCustomHeaders(ArmorHeaderComment, ArmorHeaderVersion)
 	if err != nil {
 		return fmt.Errorf("cannot armor the message: %v", err)
 	}
