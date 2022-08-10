@@ -16,8 +16,9 @@ type Decrypt struct {
 
 func (d Decrypt) Command() *cobra.Command {
 	c := &cobra.Command{
-		Use:   "decrypt",
-		Short: "Decrypt the message",
+		Use:     "decrypt",
+		Aliases: []string{"decode", "d"},
+		Short:   "Decrypt the message",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return d.run()
 		},

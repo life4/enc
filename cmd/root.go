@@ -16,6 +16,7 @@ func Command(cfg Config) *cobra.Command {
 			A user-friendly CLI tool to work with PGP keys:
 			create, add, list, encrypt, decrypt, sign, verify signatures.
 		`,
+		SilenceUsage: true, // do not print usage when command return an error
 	}
 	// enc version
 	root.AddCommand(Version{cfg: cfg}.Command())
@@ -29,8 +30,9 @@ func Command(cfg Config) *cobra.Command {
 	root.AddCommand(Dearmor{cfg: cfg}.Command())
 
 	key := &cobra.Command{
-		Use:   "key",
-		Short: "Operations with a key",
+		Use:     "key",
+		Aliases: []string{"k"},
+		Short:   "Operations with a key",
 	}
 	// enc key generate
 	key.AddCommand(KeyGenerate{cfg: cfg}.Command())

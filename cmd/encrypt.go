@@ -20,8 +20,9 @@ type Encrypt struct {
 
 func (e Encrypt) Command() *cobra.Command {
 	c := &cobra.Command{
-		Use:   "encrypt",
-		Short: "Encrypt the message",
+		Use:     "encrypt",
+		Aliases: []string{"encode", "e"},
+		Short:   "Encrypt the message",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return e.run()
 		},

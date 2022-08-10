@@ -16,8 +16,9 @@ type Version struct {
 
 func (v Version) Command() *cobra.Command {
 	return &cobra.Command{
-		Use:   "version",
-		Short: "Print the version number",
+		Use:     "version",
+		Aliases: []string{"v"},
+		Short:   "Print the version number",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return v.run()
 		},

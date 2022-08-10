@@ -15,8 +15,9 @@ type Dearmor struct {
 
 func (d Dearmor) Command() *cobra.Command {
 	c := &cobra.Command{
-		Use:   "dearmor",
-		Short: "Convert the message (or key) from text to binary",
+		Use:     "dearmor",
+		Aliases: []string{"enarmor", "unarmor", "u"},
+		Short:   "Convert the message (or key) from text to binary",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return d.run()
 		},

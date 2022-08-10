@@ -22,8 +22,9 @@ type KeyGenerate struct {
 
 func (g KeyGenerate) Command() *cobra.Command {
 	c := &cobra.Command{
-		Use:   "encrypt",
-		Short: "KeyGenerate the message",
+		Use:     "generate",
+		Aliases: []string{"create", "g"},
+		Short:   "Generate a new key",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()
 		},
