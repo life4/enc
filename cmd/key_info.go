@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 
-	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
 
@@ -26,25 +23,9 @@ func (g KeyInfo) Command() *cobra.Command {
 }
 
 func (cmd KeyInfo) run() error {
-	data, err := io.ReadAll(cmd.cfg)
+	key, err := ReadKey(cmd.cfg)
 	if err != nil {
-		return fmt.Errorf("cannot read from stdin: %v", err)
-	}
-	var key *crypto.Key
-	isArmored := bytes.HasPrefix(data, []byte("-----BEGIN PGP PRIVATE KEY BLOCK-----"))
-	if !isArmored {
-		isArmored = bytes.HasPrefix(data, []byte("-----BEGIN PGP PUBLIC KEY BLOCK-----"))
-	}
-	if isArmored {
-		key, err = crypto.NewKeyFromArmored(string(data))
-		if err != nil {
-			return fmt.Errorf("cannot unarmor the key: %v", err)
-		}
-	} else {
-		key, err = crypto.NewKey(data)
-		if err != nil {
-			return fmt.Errorf("cannot parse the key: %v", err)
-		}
+		return fmt.Errorf("cannot read key: %v", err)
 	}
 	w := cmd.cfg
 	fmt.Fprintf(w, "{\n")

@@ -5,40 +5,35 @@ import (
 
 	"github.com/ProtonMail/gopenpgp/v2/armor"
 	"github.com/ProtonMail/gopenpgp/v2/constants"
-	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
 
-type KeyGenerate struct {
+type KeyPublic struct {
 	cfg   Config
-	name  string
-	email string
-	ktype string
-	bits  int
 	armor bool
 }
 
-func (g KeyGenerate) Command() *cobra.Command {
+func (g KeyPublic) Command() *cobra.Command {
 	c := &cobra.Command{
-		Use:     "generate",
-		Aliases: []string{"create", "g"},
-		Short:   "Generate a new key",
+		Use:     "public",
+		Aliases: []string{"public", "p"},
+		Short:   "Convert private key to public key",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()
 		},
 	}
-	c.Flags().StringVar(&g.name, "name", "", "your full name")
-	c.Flags().StringVar(&g.email, "email", "", "your email address")
-	c.Flags().StringVar(&g.ktype, "type", "rsa", "type of the key")
-	c.Flags().IntVar(&g.bits, "bits", 4096, "size of the key in bits")
 	c.Flags().BoolVar(&g.armor, "armor", false, "armor the key")
 	return c
 }
 
-func (cmd KeyGenerate) run() error {
-	key, err := crypto.GenerateKey(cmd.name, cmd.email, cmd.ktype, cmd.bits)
+func (cmd KeyPublic) run() error {
+	key, err := ReadKey(cmd.cfg)
 	if err != nil {
-		return fmt.Errorf("cannot generate key: %v", err)
+		return fmt.Errorf("cannot read key: %v", err)
+	}
+	key, err = key.ToPublic()
+	if err != nil {
+		return fmt.Errorf("cannot convert key: %v", err)
 	}
 	b, err := key.Serialize()
 	if err != nil {
