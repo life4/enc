@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 
@@ -10,7 +11,7 @@ import (
 
 func ReadKey(cfg Config) (*crypto.Key, error) {
 	if !cfg.HasStdin() {
-		return nil, fmt.Errorf("no key passed into stdin")
+		return nil, errors.New("no key passed into stdin")
 	}
 	data, err := io.ReadAll(cfg)
 	if err != nil {
