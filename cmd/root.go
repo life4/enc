@@ -28,13 +28,19 @@ func Command(r io.Reader, w io.Writer) *cobra.Command {
 	// enc dearmor
 	c.AddCommand(Dearmor{Stdout: w, Stdin: r}.Command())
 
+	kc := &cobra.Command{
+		Use:   "key",
+		Short: "Operations with a key",
+	}
 	// enc key generate
+	kc.AddCommand(KeyGenerate{Stdout: w}.Command())
 	// enc key armor
 	// enc key dearmor
 	// enc key lock --pass
 	// enc key unlock --pass
 	// enc key fingerprints
 	// enc key send
+	c.AddCommand(kc)
 
 	// enc keyring list
 	// enc keyring import
