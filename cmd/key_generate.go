@@ -9,11 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Keys:
-// + password
-// + key (name, path, binary, or text)
-// + key with passphrase
-
 type KeyGenerate struct {
 	cfg   Config
 	name  string
@@ -40,8 +35,8 @@ func (g KeyGenerate) Command() *cobra.Command {
 	return c
 }
 
-func (g KeyGenerate) run() error {
-	key, err := crypto.GenerateKey(g.name, g.email, g.ktype, g.bits)
+func (cmd KeyGenerate) run() error {
+	key, err := crypto.GenerateKey(cmd.name, cmd.email, cmd.ktype, cmd.bits)
 	if err != nil {
 		return fmt.Errorf("cannot generate key: %v", err)
 	}
@@ -49,7 +44,7 @@ func (g KeyGenerate) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot serialize key: %v", err)
 	}
-	if g.armor {
+	if cmd.armor {
 		s, err := armor.ArmorWithTypeAndCustomHeaders(
 			b, constants.PrivateKeyHeader,
 			ArmorHeaderVersion, ArmorHeaderComment,
@@ -59,6 +54,6 @@ func (g KeyGenerate) run() error {
 		}
 		b = []byte(s)
 	}
-	_, err = g.cfg.Write(b)
+	_, err = cmd.cfg.Write(b)
 	return err
 }

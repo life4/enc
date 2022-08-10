@@ -36,6 +36,8 @@ func Command(cfg Config) *cobra.Command {
 	}
 	// enc key generate
 	key.AddCommand(KeyGenerate{cfg: cfg}.Command())
+	// enc key info
+	key.AddCommand(KeyInfo{cfg: cfg}.Command())
 	// enc key armor
 	// enc key dearmor
 	// enc key lock --pass

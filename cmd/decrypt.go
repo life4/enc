@@ -27,8 +27,8 @@ func (d Decrypt) Command() *cobra.Command {
 	return c
 }
 
-func (d Decrypt) run() error {
-	data, err := io.ReadAll(d.cfg)
+func (cmd Decrypt) run() error {
+	data, err := io.ReadAll(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
@@ -41,10 +41,10 @@ func (d Decrypt) run() error {
 	} else {
 		message = crypto.NewPGPMessage(data)
 	}
-	decrypted, err := crypto.DecryptMessageWithPassword(message, []byte(d.password))
+	decrypted, err := crypto.DecryptMessageWithPassword(message, []byte(cmd.password))
 	if err != nil {
 		return fmt.Errorf("cannot decrypt the message: %v", err)
 	}
-	_, err = d.cfg.Write(decrypted.GetBinary())
+	_, err = cmd.cfg.Write(decrypted.GetBinary())
 	return err
 }

@@ -31,16 +31,16 @@ func (e Encrypt) Command() *cobra.Command {
 	return c
 }
 
-func (e Encrypt) run() error {
-	data, err := io.ReadAll(e.cfg)
+func (cmd Encrypt) run() error {
+	data, err := io.ReadAll(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
 	message := crypto.NewPlainMessage(data)
-	encrypted, err := crypto.EncryptMessageWithPassword(message, []byte(e.password))
+	encrypted, err := crypto.EncryptMessageWithPassword(message, []byte(cmd.password))
 	if err != nil {
 		return fmt.Errorf("cannot encrypt the message: %v", err)
 	}
-	_, err = e.cfg.Write(encrypted.GetBinary())
+	_, err = cmd.cfg.Write(encrypted.GetBinary())
 	return err
 }
