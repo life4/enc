@@ -40,21 +40,22 @@ func Command(cfg Config) *cobra.Command {
 	key.AddCommand(KeyInfo{cfg: cfg}.Command())
 	// $ enc key public
 	key.AddCommand(KeyPublic{cfg: cfg}.Command())
-	// enc key armor
+	// $ enc key armor
 	key.AddCommand(KeyArmor{cfg: cfg}.Command())
-	// enc key dearmor
-	// enc key lock --pass
-	// enc key unlock --pass
-	// enc key fingerprints
-	// enc key send
-	// enc key revoke
+	// $ enc key dearmor
+	key.AddCommand(KeyDearmor{cfg: cfg}.Command())
+	// $ enc key lock --pass
+	// $ enc key unlock --pass
+	// $ enc key fingerprints
+	// $ enc key send
+	// $ enc key revoke
 	root.AddCommand(key)
 
-	// enc keyring list
-	// enc keyring import
-	// enc keyring export public
-	// enc keyring export private
-	// enc keyring delete
+	// $ enc keyring list
+	// $ enc keyring import
+	// $ enc keyring export public
+	// $ enc keyring export private
+	// $ enc keyring delete
 	return root
 }
 
