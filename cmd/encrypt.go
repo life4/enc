@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"io"
 
@@ -16,6 +17,7 @@ import (
 type Encrypt struct {
 	cfg      Config
 	password string
+	key      string
 }
 
 func (e Encrypt) Command() *cobra.Command {
@@ -29,16 +31,33 @@ func (e Encrypt) Command() *cobra.Command {
 		},
 	}
 	c.Flags().StringVar(&e.password, "password", "", "password to use")
+	c.Flags().StringVar(&e.key, "key", "", "path to the key to use")
 	return c
 }
 
 func (cmd Encrypt) run() error {
+	if !cmd.cfg.HasStdin() {
+		return errors.New("no file passed into stdin")
+	}
 	data, err := io.ReadAll(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
 	message := crypto.NewPlainMessage(data)
-	encrypted, err := crypto.EncryptMessageWithPassword(message, []byte(cmd.password))
+	var encrypted *crypto.PGPMessage
+	if cmd.key != "" {
+		key, err := ReadKeyFile(cmd.key)
+		if err != nil {
+			return fmt.Errorf("cannot read key: %v", err)
+		}
+		keyring, err := crypto.NewKeyRing(key)
+		if err != nil {
+			return fmt.Errorf("cannot create keyring: %v", err)
+		}
+		encrypted, err = keyring.Encrypt(message, nil)
+	} else {
+		encrypted, err = crypto.EncryptMessageWithPassword(message, []byte(cmd.password))
+	}
 	if err != nil {
 		return fmt.Errorf("cannot encrypt the message: %v", err)
 	}

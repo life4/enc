@@ -17,15 +17,15 @@ func ReadKeys(cfg Config) (*crypto.KeyRing, error) {
 		r = cfg
 	} else {
 		home, err := os.UserHomeDir()
-		f, err := os.Open(home + "/.gnupg/pubring.gpg")
 		if err != nil {
 			return nil, fmt.Errorf("find home dir: %v", err)
 		}
+		f, err := os.Open(home + "/.gnupg/pubring.gpg")
 		if err == os.ErrNotExist {
 			return nil, fmt.Errorf("read from stdin: %v", err)
 		}
 		if err != nil {
-			return nil, fmt.Errorf("read secring.gpg: %v", err)
+			return nil, fmt.Errorf("open secring.gpg: %v", err)
 		}
 		r = f
 		defer f.Close()
@@ -45,11 +45,24 @@ func ReadKeys(cfg Config) (*crypto.KeyRing, error) {
 	return keyring, nil
 }
 
-func ReadKey(cfg Config) (*crypto.Key, error) {
+func ReadKeyStdin(cfg Config) (*crypto.Key, error) {
 	if !cfg.HasStdin() {
 		return nil, errors.New("no key passed into stdin")
 	}
-	data, err := io.ReadAll(cfg)
+	return ReadKeyStream(cfg)
+}
+
+func ReadKeyFile(path string) (*crypto.Key, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("open file: %v", err)
+	}
+	defer f.Close()
+	return ReadKeyStream(f)
+}
+
+func ReadKeyStream(r io.Reader) (*crypto.Key, error) {
+	data, err := io.ReadAll(r)
 	if err != nil {
 		return nil, fmt.Errorf("read from stdin: %v", err)
 	}

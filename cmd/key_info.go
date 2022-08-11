@@ -24,7 +24,7 @@ func (cmd KeyInfo) Command() *cobra.Command {
 }
 
 func (cmd KeyInfo) run() error {
-	key, err := ReadKey(cmd.cfg)
+	key, err := ReadKeyStdin(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read key: %v", err)
 	}

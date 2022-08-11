@@ -27,7 +27,7 @@ func (cmd KeyRevoke) Command() *cobra.Command {
 }
 
 func (cmd KeyRevoke) run() error {
-	key, err := ReadKey(cmd.cfg)
+	key, err := ReadKeyStdin(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read key: %v", err)
 	}
