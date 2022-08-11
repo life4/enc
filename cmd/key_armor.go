@@ -12,14 +12,14 @@ type KeyArmor struct {
 	cfg Config
 }
 
-func (g KeyArmor) Command() *cobra.Command {
+func (cmd KeyArmor) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "armor",
 		Aliases: []string{"a"},
 		Args:    cobra.NoArgs,
 		Short:   "Armor key",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return g.run()
+		RunE: func(_ *cobra.Command, args []string) error {
+			return cmd.run()
 		},
 	}
 	return c

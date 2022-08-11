@@ -12,15 +12,15 @@ type KeysGet struct {
 	query string
 }
 
-func (g KeysGet) Command() *cobra.Command {
+func (cmd KeysGet) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "get",
 		Aliases: []string{"filter", "g", "export"},
 		Short:   "Get a specific key from keyring",
 		Args:    cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			g.query = args[0]
-			return g.run()
+		RunE: func(_ *cobra.Command, args []string) error {
+			cmd.query = args[0]
+			return cmd.run()
 		},
 	}
 	return c

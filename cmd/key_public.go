@@ -13,17 +13,17 @@ type KeyPublic struct {
 	armor bool
 }
 
-func (g KeyPublic) Command() *cobra.Command {
+func (cmd KeyPublic) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "public",
 		Aliases: []string{"public", "p"},
 		Args:    cobra.NoArgs,
 		Short:   "Convert private key to public key",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return g.run()
+		RunE: func(_ *cobra.Command, args []string) error {
+			return cmd.run()
 		},
 	}
-	c.Flags().BoolVar(&g.armor, "armor", false, "armor the key")
+	c.Flags().BoolVar(&cmd.armor, "armor", false, "armor the key")
 	return c
 }
 

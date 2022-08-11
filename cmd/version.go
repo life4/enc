@@ -19,7 +19,7 @@ func (v Version) Command() *cobra.Command {
 		Use:     "version",
 		Aliases: []string{"v"},
 		Short:   "Print the version number",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return v.run()
 		},
 	}

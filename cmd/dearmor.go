@@ -19,7 +19,7 @@ func (d Dearmor) Command() *cobra.Command {
 		Aliases: []string{"enarmor", "unarmor", "u"},
 		Args:    cobra.NoArgs,
 		Short:   "Convert the message (or key) from text to binary",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return d.run()
 		},
 	}

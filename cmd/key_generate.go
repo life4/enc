@@ -20,21 +20,21 @@ type KeyGenerate struct {
 	armor bool
 }
 
-func (g KeyGenerate) Command() *cobra.Command {
+func (cmd KeyGenerate) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "generate",
 		Aliases: []string{"create", "g"},
 		Args:    cobra.NoArgs,
 		Short:   "Generate new private key",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return g.run()
+		RunE: func(_ *cobra.Command, args []string) error {
+			return cmd.run()
 		},
 	}
-	c.Flags().StringVar(&g.name, "name", "", "your full name")
-	c.Flags().StringVar(&g.email, "email", "", "your email address")
-	c.Flags().StringVar(&g.ktype, "type", "rsa", "type of the key")
-	c.Flags().IntVar(&g.bits, "bits", 4096, "size of the key in bits")
-	c.Flags().BoolVar(&g.armor, "armor", false, "armor the key")
+	c.Flags().StringVar(&cmd.name, "name", "", "your full name")
+	c.Flags().StringVar(&cmd.email, "email", "", "your email address")
+	c.Flags().StringVar(&cmd.ktype, "type", "rsa", "type of the key")
+	c.Flags().IntVar(&cmd.bits, "bits", 4096, "size of the key in bits")
+	c.Flags().BoolVar(&cmd.armor, "armor", false, "armor the key")
 	return c
 }
 

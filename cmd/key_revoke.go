@@ -12,17 +12,17 @@ type KeyRevoke struct {
 	reason string
 }
 
-func (g KeyRevoke) Command() *cobra.Command {
+func (cmd KeyRevoke) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "revoke",
 		Aliases: []string{"destroy", "r"},
 		Args:    cobra.NoArgs,
 		Short:   "Revoke the key",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return g.run()
+		RunE: func(_ *cobra.Command, args []string) error {
+			return cmd.run()
 		},
 	}
-	c.Flags().StringVar(&g.reason, "reason", "", "a short explanation why the key is revoked")
+	c.Flags().StringVar(&cmd.reason, "reason", "", "a short explanation why the key is revoked")
 	return c
 }
 

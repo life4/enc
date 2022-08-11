@@ -10,14 +10,14 @@ type KeyInfo struct {
 	cfg Config
 }
 
-func (g KeyInfo) Command() *cobra.Command {
+func (cmd KeyInfo) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "info",
 		Aliases: []string{"inspect", "i"},
 		Args:    cobra.NoArgs,
 		Short:   "Show information about key",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return g.run()
+		RunE: func(_ *cobra.Command, args []string) error {
+			return cmd.run()
 		},
 	}
 	return c

@@ -10,14 +10,14 @@ type KeysList struct {
 	cfg Config
 }
 
-func (g KeysList) Command() *cobra.Command {
+func (cmd KeysList) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "list",
 		Aliases: []string{"all", "l"},
 		Args:    cobra.NoArgs,
 		Short:   "Show list of all keys in keyring",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return g.run()
+		RunE: func(_ *cobra.Command, args []string) error {
+			return cmd.run()
 		},
 	}
 	return c

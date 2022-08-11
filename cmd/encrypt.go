@@ -24,7 +24,7 @@ func (e Encrypt) Command() *cobra.Command {
 		Aliases: []string{"encode", "e"},
 		Args:    cobra.NoArgs,
 		Short:   "Encrypt the message",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			return e.run()
 		},
 	}
