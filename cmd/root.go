@@ -32,7 +32,7 @@ func Command(cfg Config) *cobra.Command {
 	key := &cobra.Command{
 		Use:     "key",
 		Aliases: []string{"k"},
-		Short:   "Operations with a key",
+		Short:   "Operations with key",
 	}
 	// $ enc key generate
 	key.AddCommand(KeyGenerate{cfg: cfg}.Command())
@@ -51,11 +51,18 @@ func Command(cfg Config) *cobra.Command {
 	// $ enc key revoke
 	root.AddCommand(key)
 
-	// $ enc keyring list
-	// $ enc keyring import
-	// $ enc keyring export public
-	// $ enc keyring export private
-	// $ enc keyring delete
+	keys := &cobra.Command{
+		Use:     "keys",
+		Aliases: []string{"c"},
+		Short:   "Operations with key chain",
+	}
+	// $ enc keys list
+	keys.AddCommand(KeysList{cfg: cfg}.Command())
+	// $ enc keys add
+	// $ enc keys get public
+	// $ enc keys get private
+	// $ enc keys delete
+	root.AddCommand(keys)
 	return root
 }
 
