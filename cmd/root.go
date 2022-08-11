@@ -53,14 +53,15 @@ func Command(cfg Config) *cobra.Command {
 
 	keys := &cobra.Command{
 		Use:     "keys",
-		Aliases: []string{"c"},
-		Short:   "Operations with key chain",
+		Aliases: []string{"keychain", "keyring", "c", "r"},
+		Short:   "Operations with key ring",
 	}
 	// $ enc keys list
 	keys.AddCommand(KeysList{cfg: cfg}.Command())
-	// $ enc keys add
 	// $ enc keys get public
 	// $ enc keys get private
+	keys.AddCommand(KeysGet{cfg: cfg}.Command())
+	// $ enc keys add
 	// $ enc keys delete
 	root.AddCommand(keys)
 	return root
