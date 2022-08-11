@@ -16,6 +16,7 @@ func (g KeyDearmor) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "dearmor",
 		Aliases: []string{"d"},
+		Args:    cobra.NoArgs,
 		Short:   "Dearmor key",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()

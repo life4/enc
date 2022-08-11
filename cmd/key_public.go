@@ -17,6 +17,7 @@ func (g KeyPublic) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "public",
 		Aliases: []string{"public", "p"},
+		Args:    cobra.NoArgs,
 		Short:   "Convert private key to public key",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()

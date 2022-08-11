@@ -18,6 +18,7 @@ func (d Decrypt) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "decrypt",
 		Aliases: []string{"decode", "d"},
+		Args:    cobra.NoArgs,
 		Short:   "Decrypt the message",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return d.run()

@@ -14,6 +14,7 @@ func (g KeyInfo) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "info",
 		Aliases: []string{"inspect", "i"},
+		Args:    cobra.NoArgs,
 		Short:   "Show information about key",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()

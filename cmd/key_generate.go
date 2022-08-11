@@ -24,6 +24,7 @@ func (g KeyGenerate) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "generate",
 		Aliases: []string{"create", "g"},
+		Args:    cobra.NoArgs,
 		Short:   "Generate new private key",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()

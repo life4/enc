@@ -16,6 +16,7 @@ func (a Armor) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "armor",
 		Aliases: []string{"a"},
+		Args:    cobra.NoArgs,
 		Short:   "Convert the message (or key) from binary to text",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return a.run()

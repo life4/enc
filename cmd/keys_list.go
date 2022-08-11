@@ -14,6 +14,7 @@ func (g KeysList) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "list",
 		Aliases: []string{"all", "l"},
+		Args:    cobra.NoArgs,
 		Short:   "Show list of all keys in keyring",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()

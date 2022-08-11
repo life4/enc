@@ -16,6 +16,7 @@ func (g KeyRevoke) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "revoke",
 		Aliases: []string{"destroy", "r"},
+		Args:    cobra.NoArgs,
 		Short:   "Revoke the key",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return g.run()
