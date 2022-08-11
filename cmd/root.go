@@ -45,10 +45,15 @@ func Command(cfg Config) *cobra.Command {
 	// $ enc key dearmor
 	key.AddCommand(KeyDearmor{cfg: cfg}.Command())
 	// $ enc key lock --pass
+	// ...
 	// $ enc key unlock --pass
+	// ...
 	// $ enc key fingerprints
+	// ...
 	// $ enc key send
+	// ...
 	// $ enc key revoke
+	key.AddCommand(KeyRevoke{cfg: cfg}.Command())
 	root.AddCommand(key)
 
 	keys := &cobra.Command{
@@ -58,10 +63,10 @@ func Command(cfg Config) *cobra.Command {
 	}
 	// $ enc keys list
 	keys.AddCommand(KeysList{cfg: cfg}.Command())
-	// $ enc keys get public
-	// $ enc keys get private
+	// $ enc keys get
 	keys.AddCommand(KeysGet{cfg: cfg}.Command())
 	// $ enc keys add
+	// ...
 	// $ enc keys delete
 	root.AddCommand(keys)
 	return root
