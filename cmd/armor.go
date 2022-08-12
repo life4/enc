@@ -9,32 +9,37 @@ import (
 )
 
 type Armor struct {
-	cfg Config
+	cfg     Config
+	comment string
 }
 
-func (a Armor) Command() *cobra.Command {
+func (cmd Armor) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "armor",
 		Aliases: []string{"a"},
 		Args:    cobra.NoArgs,
 		Short:   "Convert the message (or key) from binary to text",
 		RunE: func(_ *cobra.Command, args []string) error {
-			return a.run()
+			return cmd.run()
 		},
 	}
+	c.Flags().StringVarP(
+		&cmd.comment, "comment", "c", ArmorHeaderComment,
+		"the comment to put into armored text",
+	)
 	return c
 }
 
-func (e Armor) run() error {
-	data, err := io.ReadAll(e.cfg)
+func (cmd Armor) run() error {
+	data, err := io.ReadAll(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read from stdin: %v", err)
 	}
 	message := crypto.NewPGPMessage(data)
-	armored, err := message.GetArmoredWithCustomHeaders(ArmorHeaderComment, ArmorHeaderVersion)
+	armored, err := message.GetArmoredWithCustomHeaders(cmd.comment, ArmorHeaderVersion)
 	if err != nil {
 		return fmt.Errorf("cannot armor the message: %v", err)
 	}
-	_, err = e.cfg.Write([]byte(armored))
+	_, err = cmd.cfg.Write([]byte(armored))
 	return err
 }

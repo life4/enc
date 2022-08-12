@@ -20,18 +20,18 @@ type Encrypt struct {
 	key      string
 }
 
-func (e Encrypt) Command() *cobra.Command {
+func (cmd Encrypt) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "encrypt",
 		Aliases: []string{"encode", "e"},
 		Args:    cobra.NoArgs,
 		Short:   "Encrypt the message",
 		RunE: func(_ *cobra.Command, args []string) error {
-			return e.run()
+			return cmd.run()
 		},
 	}
-	c.Flags().StringVarP(&e.password, "password", "p", "", "password to use")
-	c.Flags().StringVarP(&e.key, "key", "k", "", "path to the key to use")
+	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use")
+	c.Flags().StringVarP(&cmd.key, "key", "k", "", "path to the key to use")
 	return c
 }
 

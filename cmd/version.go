@@ -14,23 +14,23 @@ type Version struct {
 	cfg Config
 }
 
-func (v Version) Command() *cobra.Command {
+func (cmd Version) Command() *cobra.Command {
 	return &cobra.Command{
 		Use:     "version",
 		Aliases: []string{"v"},
 		Short:   "Print the version number",
 		RunE: func(_ *cobra.Command, args []string) error {
-			return v.run()
+			return cmd.run()
 		},
 	}
 }
 
-func (v Version) run() error {
+func (cmd Version) run() error {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
 		return errors.New("cannot read build info")
 	}
-	w := v.cfg
+	w := cmd.cfg
 	fmt.Fprintf(w, "{\n")
 	fmt.Fprintf(w, "  go_version: %#v,\n", info.GoVersion)
 	fmt.Fprintf(w, "  revision:   %#v,\n", getBuildKey(info, "vcs.revision"))

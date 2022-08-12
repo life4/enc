@@ -14,17 +14,17 @@ type Decrypt struct {
 	password string
 }
 
-func (d Decrypt) Command() *cobra.Command {
+func (cmd Decrypt) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "decrypt",
 		Aliases: []string{"decode", "d"},
 		Args:    cobra.NoArgs,
 		Short:   "Decrypt the message",
 		RunE: func(_ *cobra.Command, args []string) error {
-			return d.run()
+			return cmd.run()
 		},
 	}
-	c.Flags().StringVarP(&d.password, "password", "p", "", "password to use")
+	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use")
 	return c
 }
 
