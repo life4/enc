@@ -9,11 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Keys:
-// + password
-// + key (name, path, binary, or text)
-// + key with passphrase
-
 type Encrypt struct {
 	cfg      Config
 	password string

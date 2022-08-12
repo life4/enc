@@ -29,6 +29,15 @@ func Command(cfg Config) *cobra.Command {
 	// $ enc dearmor
 	root.AddCommand(Dearmor{cfg: cfg}.Command())
 
+	sig := &cobra.Command{
+		Use:     "sig",
+		Aliases: []string{"s"},
+		Short:   "Operations with signatures",
+	}
+	// $ enc sig create
+	root.AddCommand(SigCreate{cfg: cfg}.Command())
+	root.AddCommand(sig)
+
 	key := &cobra.Command{
 		Use:     "key",
 		Aliases: []string{"k"},
@@ -50,7 +59,9 @@ func Command(cfg Config) *cobra.Command {
 	// ...
 	// $ enc key fingerprints
 	// ...
-	// $ enc key send
+	// $ enc key upload
+	// ...
+	// $ enc key download
 	// ...
 	// $ enc key revoke
 	key.AddCommand(KeyRevoke{cfg: cfg}.Command())
