@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os/user"
 
-	"github.com/ProtonMail/gopenpgp/v2/armor"
-	"github.com/ProtonMail/gopenpgp/v2/constants"
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +15,6 @@ type KeyGenerate struct {
 	email string
 	ktype string
 	bits  int
-	armor bool
 }
 
 func (cmd KeyGenerate) Command() *cobra.Command {
@@ -34,7 +31,6 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 	c.Flags().StringVarP(&cmd.email, "email", "e", "", "your email address")
 	c.Flags().StringVarP(&cmd.ktype, "type", "t", "rsa", "type of the key")
 	c.Flags().IntVarP(&cmd.bits, "bits", "b", 4096, "size of the key in bits")
-	c.Flags().BoolVarP(&cmd.armor, "armor", "a", false, "armor the key")
 	return c
 }
 
@@ -50,16 +46,6 @@ func (cmd KeyGenerate) run() error {
 	b, err := key.Serialize()
 	if err != nil {
 		return fmt.Errorf("cannot serialize key: %v", err)
-	}
-	if cmd.armor {
-		s, err := armor.ArmorWithTypeAndCustomHeaders(
-			b, constants.PrivateKeyHeader,
-			ArmorHeaderVersion, ArmorHeaderComment,
-		)
-		if err != nil {
-			return fmt.Errorf("cannot armor key: %v", err)
-		}
-		b = []byte(s)
 	}
 	_, err = cmd.cfg.Write(b)
 	return err

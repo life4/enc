@@ -3,14 +3,11 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ProtonMail/gopenpgp/v2/armor"
-	"github.com/ProtonMail/gopenpgp/v2/constants"
 	"github.com/spf13/cobra"
 )
 
 type KeyPublic struct {
-	cfg   Config
-	armor bool
+	cfg Config
 }
 
 func (cmd KeyPublic) Command() *cobra.Command {
@@ -23,7 +20,6 @@ func (cmd KeyPublic) Command() *cobra.Command {
 			return cmd.run()
 		},
 	}
-	c.Flags().BoolVarP(&cmd.armor, "armor", "a", false, "armor the key")
 	return c
 }
 
@@ -39,16 +35,6 @@ func (cmd KeyPublic) run() error {
 	b, err := key.Serialize()
 	if err != nil {
 		return fmt.Errorf("cannot serialize key: %v", err)
-	}
-	if cmd.armor {
-		s, err := armor.ArmorWithTypeAndCustomHeaders(
-			b, constants.PublicKeyHeader,
-			ArmorHeaderVersion, ArmorHeaderComment,
-		)
-		if err != nil {
-			return fmt.Errorf("cannot armor key: %v", err)
-		}
-		b = []byte(s)
 	}
 	_, err = cmd.cfg.Write(b)
 	return err
