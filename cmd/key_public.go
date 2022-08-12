@@ -23,7 +23,7 @@ func (cmd KeyPublic) Command() *cobra.Command {
 			return cmd.run()
 		},
 	}
-	c.Flags().BoolVar(&cmd.armor, "armor", false, "armor the key")
+	c.Flags().BoolVarP(&cmd.armor, "armor", "a", false, "armor the key")
 	return c
 }
 

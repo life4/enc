@@ -30,11 +30,11 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 			return cmd.run()
 		},
 	}
-	c.Flags().StringVar(&cmd.name, "name", "", "your full name")
-	c.Flags().StringVar(&cmd.email, "email", "", "your email address")
-	c.Flags().StringVar(&cmd.ktype, "type", "rsa", "type of the key")
-	c.Flags().IntVar(&cmd.bits, "bits", 4096, "size of the key in bits")
-	c.Flags().BoolVar(&cmd.armor, "armor", false, "armor the key")
+	c.Flags().StringVarP(&cmd.name, "name", "n", "", "your full name")
+	c.Flags().StringVarP(&cmd.email, "email", "e", "", "your email address")
+	c.Flags().StringVarP(&cmd.ktype, "type", "t", "rsa", "type of the key")
+	c.Flags().IntVarP(&cmd.bits, "bits", "b", 4096, "size of the key in bits")
+	c.Flags().BoolVarP(&cmd.armor, "armor", "a", false, "armor the key")
 	return c
 }
 

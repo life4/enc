@@ -22,7 +22,7 @@ func (cmd KeyRevoke) Command() *cobra.Command {
 			return cmd.run()
 		},
 	}
-	c.Flags().StringVar(&cmd.reason, "reason", "", "a short explanation why the key is revoked")
+	c.Flags().StringVarP(&cmd.reason, "reason", "r", "", "a short explanation why the key is revoked")
 	return c
 }
 

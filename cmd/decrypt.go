@@ -24,7 +24,7 @@ func (d Decrypt) Command() *cobra.Command {
 			return d.run()
 		},
 	}
-	c.Flags().StringVar(&d.password, "password", "", "password to use")
+	c.Flags().StringVarP(&d.password, "password", "p", "", "password to use")
 	return c
 }
 
