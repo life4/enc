@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io"
 
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
@@ -31,14 +30,10 @@ func (cmd Encrypt) Command() *cobra.Command {
 }
 
 func (cmd Encrypt) run() error {
-	if !cmd.cfg.HasStdin() {
-		return errors.New("no file passed into stdin")
-	}
-	data, err := io.ReadAll(cmd.cfg)
+	message, err := ReadPlainMessageStdin(cmd.cfg)
 	if err != nil {
-		return fmt.Errorf("cannot read from stdin: %v", err)
+		return fmt.Errorf("cannot read message: %v", err)
 	}
-	message := crypto.NewPlainMessage(data)
 	var encrypted *crypto.PGPMessage
 	if cmd.key != "" {
 		key, err := ReadKeyFile(cmd.key)

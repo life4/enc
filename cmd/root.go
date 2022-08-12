@@ -36,6 +36,8 @@ func Command(cfg Config) *cobra.Command {
 	}
 	// $ enc sig create
 	root.AddCommand(SigCreate{cfg: cfg}.Command())
+	// $ enc sig verify
+	root.AddCommand(SigVerify{cfg: cfg}.Command())
 	root.AddCommand(sig)
 
 	key := &cobra.Command{

@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
@@ -29,22 +27,13 @@ func (cmd Decrypt) Command() *cobra.Command {
 }
 
 func (cmd Decrypt) run() error {
-	data, err := io.ReadAll(cmd.cfg)
+	message, err := ReadPGPMessageStdin(cmd.cfg)
 	if err != nil {
-		return fmt.Errorf("cannot read from stdin: %v", err)
-	}
-	var message *crypto.PGPMessage
-	if bytes.HasPrefix(data, []byte("-----BEGIN PGP MESSAGE-----")) {
-		message, err = crypto.NewPGPMessageFromArmored(string(data))
-		if err != nil {
-			return fmt.Errorf("cannot unarmor the message: %v", err)
-		}
-	} else {
-		message = crypto.NewPGPMessage(data)
+		return fmt.Errorf("cannot read message: %v", err)
 	}
 	decrypted, err := crypto.DecryptMessageWithPassword(message, []byte(cmd.password))
 	if err != nil {
-		return fmt.Errorf("cannot decrypt the message: %v", err)
+		return fmt.Errorf("cannot decrypt message: %v", err)
 	}
 	_, err = cmd.cfg.Write(decrypted.GetBinary())
 	return err

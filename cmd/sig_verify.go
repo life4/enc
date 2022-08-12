@@ -2,37 +2,47 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
 
-type SigCreate struct {
-	cfg      Config
-	password string
-	key      string
+type SigVerify struct {
+	cfg       Config
+	password  string
+	key       string
+	signature string
 }
 
-func (cmd SigCreate) Command() *cobra.Command {
+func (cmd SigVerify) Command() *cobra.Command {
 	c := &cobra.Command{
-		Use:     "create",
-		Aliases: []string{"sign", "generate", "c", "n"},
+		Use:     "verify",
+		Aliases: []string{"validate", "check", "v"},
 		Args:    cobra.NoArgs,
-		Short:   "Sign the message",
+		Short:   "Validate the message using signature",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},
 	}
+	c.Flags().StringVarP(&cmd.signature, "signature", "s", "", "path to the signature")
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use to unlock the key")
 	c.Flags().StringVarP(&cmd.key, "key", "k", "", "path to the key to use")
 	return c
 }
 
-func (cmd SigCreate) run() error {
+func (cmd SigVerify) run() error {
 	message, err := ReadPlainMessageStdin(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read message: %v", err)
 	}
+
+	data, err := io.ReadAll(cmd.cfg)
+	if err != nil {
+		return fmt.Errorf("read signature file: %v", err)
+	}
+	signature := crypto.NewPGPSignature(data)
+
 	key, err := ReadKeyFile(cmd.key)
 	if err != nil {
 		return fmt.Errorf("cannot read key: %v", err)
@@ -47,10 +57,5 @@ func (cmd SigCreate) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot create keyring: %v", err)
 	}
-	signature, err := keyring.SignDetached(message)
-	if err != nil {
-		return fmt.Errorf("cannot encrypt the message: %v", err)
-	}
-	_, err = cmd.cfg.Write(signature.GetBinary())
-	return err
+	return keyring.VerifyDetached(message, signature, crypto.GetUnixTime())
 }

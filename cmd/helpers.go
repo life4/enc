@@ -81,3 +81,30 @@ func ReadKeyStream(r io.Reader) (*crypto.Key, error) {
 		return key, nil
 	}
 }
+
+func ReadPlainMessageStdin(cfg Config) (*crypto.PlainMessage, error) {
+	if !cfg.HasStdin() {
+		return nil, errors.New("no file passed into stdin")
+	}
+	data, err := io.ReadAll(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("read from stdin: %v", err)
+	}
+	return crypto.NewPlainMessage(data), nil
+}
+
+func ReadPGPMessageStdin(cfg Config) (*crypto.PGPMessage, error) {
+	data, err := io.ReadAll(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("read from stdin: %v", err)
+	}
+	if bytes.HasPrefix(data, []byte("-----BEGIN PGP MESSAGE-----")) {
+		message, err := crypto.NewPGPMessageFromArmored(string(data))
+		if err != nil {
+			return nil, fmt.Errorf("unarmor the message: %v", err)
+		}
+		return message, nil
+	} else {
+		return crypto.NewPGPMessage(data), nil
+	}
+}
