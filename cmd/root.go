@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -95,7 +94,6 @@ func Main(args []string, r io.Reader, w io.Writer) error {
 func Entrypoint() {
 	err := Main(os.Args[1:], os.Stdin, os.Stdout)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
