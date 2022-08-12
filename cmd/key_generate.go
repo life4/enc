@@ -1,20 +1,25 @@
 package cmd
 
 import (
+	stdcrypto "crypto"
 	"errors"
 	"fmt"
 	"os/user"
+	"strings"
 
+	"github.com/ProtonMail/go-crypto/openpgp"
+	"github.com/ProtonMail/go-crypto/openpgp/packet"
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
 
 type KeyGenerate struct {
-	cfg   Config
-	name  string
-	email string
-	ktype string
-	bits  int
+	cfg     Config
+	name    string
+	email   string
+	ktype   string
+	comment string
+	bits    int
 }
 
 func (cmd KeyGenerate) Command() *cobra.Command {
@@ -30,7 +35,7 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 	c.Flags().StringVarP(&cmd.name, "name", "n", "", "your full name")
 	c.Flags().StringVarP(&cmd.email, "email", "e", "", "your email address")
 	c.Flags().StringVarP(&cmd.ktype, "type", "t", "rsa", "type of the key")
-	c.Flags().IntVarP(&cmd.bits, "bits", "b", 4096, "size of the key in bits")
+	c.Flags().IntVarP(&cmd.bits, "bits", "b", 4096, "size of RSA key in bits")
 	return c
 }
 
@@ -39,16 +44,31 @@ func (cmd KeyGenerate) run() error {
 	if username == "" {
 		return errors.New("--name is required")
 	}
-	key, err := crypto.GenerateKey(username, cmd.email, cmd.ktype, cmd.bits)
-	if err != nil {
-		return fmt.Errorf("cannot generate key: %v", err)
+	alg := cmd.algorithm()
+	if alg == 0 {
+		return fmt.Errorf("unsupported key type: %v", cmd.ktype)
 	}
-	b, err := key.Serialize()
+	cfg := &packet.Config{
+		Algorithm:              alg,
+		RSABits:                cmd.bits,
+		Time:                   crypto.GetTime,
+		DefaultHash:            stdcrypto.SHA256,
+		DefaultCipher:          packet.CipherAES256,
+		DefaultCompressionAlgo: packet.CompressionZLIB,
+	}
+
+	entity, err := openpgp.NewEntity(username, cmd.comment, cmd.email, cfg)
+	if err != nil {
+		return fmt.Errorf("cannot create entity: %v", err)
+	}
+	if entity.PrivateKey == nil {
+		return errors.New("cannot generate private key")
+	}
+	err = entity.SerializePrivateWithoutSigning(cmd.cfg, nil)
 	if err != nil {
 		return fmt.Errorf("cannot serialize key: %v", err)
 	}
-	_, err = cmd.cfg.Write(b)
-	return err
+	return nil
 }
 
 func (cmd KeyGenerate) Username() string {
@@ -63,4 +83,23 @@ func (cmd KeyGenerate) Username() string {
 		return user.Username
 	}
 	return ""
+}
+
+func (cmd KeyGenerate) algorithm() packet.PublicKeyAlgorithm {
+	switch strings.ToLower(cmd.ktype) {
+	case "rsa":
+		return packet.PubKeyAlgoRSA
+	case "x25519", "eddsa":
+		return packet.PubKeyAlgoEdDSA
+	case "elgamal":
+		return packet.PubKeyAlgoElGamal
+	case "dsa":
+		return packet.PubKeyAlgoDSA
+	case "ecdh":
+		return packet.PubKeyAlgoECDH
+	case "ecdsa":
+		return packet.PubKeyAlgoECDSA
+	default:
+		return 0
+	}
 }
