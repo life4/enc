@@ -30,8 +30,8 @@ func (e Encrypt) Command() *cobra.Command {
 			return e.run()
 		},
 	}
-	c.Flags().StringVar(&e.password, "password", "", "password to use")
-	c.Flags().StringVar(&e.key, "key", "", "path to the key to use")
+	c.Flags().StringVarP(&e.password, "password", "p", "", "password to use")
+	c.Flags().StringVarP(&e.key, "key", "k", "", "path to the key to use")
 	return c
 }
 
@@ -50,13 +50,21 @@ func (cmd Encrypt) run() error {
 		if err != nil {
 			return fmt.Errorf("cannot read key: %v", err)
 		}
+		if cmd.password != "" {
+			key, err = key.Unlock([]byte(cmd.password))
+			if err != nil {
+				return fmt.Errorf("cannot unlock key: %v", err)
+			}
+		}
 		keyring, err := crypto.NewKeyRing(key)
 		if err != nil {
 			return fmt.Errorf("cannot create keyring: %v", err)
 		}
 		encrypted, err = keyring.Encrypt(message, nil)
-	} else {
+	} else if cmd.password != "" {
 		encrypted, err = crypto.EncryptMessageWithPassword(message, []byte(cmd.password))
+	} else {
+		return errors.New("a password or a key required")
 	}
 	if err != nil {
 		return fmt.Errorf("cannot encrypt the message: %v", err)
