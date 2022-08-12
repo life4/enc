@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os/user"
 	"strings"
+	"time"
 
 	"github.com/ProtonMail/go-crypto/openpgp"
 	"github.com/ProtonMail/go-crypto/openpgp/packet"
@@ -20,6 +21,7 @@ type KeyGenerate struct {
 	ktype   string
 	comment string
 	bits    int
+	ttl     time.Duration
 }
 
 func (cmd KeyGenerate) Command() *cobra.Command {
@@ -36,6 +38,7 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 	c.Flags().StringVarP(&cmd.email, "email", "e", "", "your email address")
 	c.Flags().StringVarP(&cmd.ktype, "type", "t", "rsa", "type of the key")
 	c.Flags().IntVarP(&cmd.bits, "bits", "b", 4096, "size of RSA key in bits")
+	c.Flags().DurationVar(&cmd.ttl, "ttl", 0, "validity period of the key")
 	return c
 }
 
@@ -48,9 +51,13 @@ func (cmd KeyGenerate) run() error {
 	if alg == 0 {
 		return fmt.Errorf("unsupported key type: %v", cmd.ktype)
 	}
+	if alg != packet.PubKeyAlgoRSA && cmd.bits != 4096 {
+		return errors.New("--bits has effect only with 'rsa' key type")
+	}
 	cfg := &packet.Config{
 		Algorithm:              alg,
 		RSABits:                cmd.bits,
+		KeyLifetimeSecs:        uint32(cmd.ttl.Seconds()),
 		Time:                   crypto.GetTime,
 		DefaultHash:            stdcrypto.SHA256,
 		DefaultCipher:          packet.CipherAES256,
