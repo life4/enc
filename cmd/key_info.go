@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -35,29 +36,35 @@ func (cmd KeyInfo) run() error {
 	w := cmd.cfg
 	fmt.Fprintf(w, "{\n")
 
-	// strings
-	fmt.Fprintf(w, "  id: %#v,\n", key.GetHexKeyID())
-	fmt.Fprintf(w, "  fingerprint: %#v,\n", key.GetFingerprint())
-	fmt.Fprintf(w, "  algorithm: %#v,\n", cmd.algorithm(key))
-	fmt.Fprintf(w, "  created_at: %#v,\n", prim.CreationTime.Format(time.RFC3339))
-
-	// user identity
 	ident := key.GetEntity().PrimaryIdentity()
-	fmt.Fprintln(w, "  identity: {")
-	fmt.Fprintf(w, "    name: %#v,\n", ident.UserId.Name)
-	fmt.Fprintf(w, "    email: %#v,\n", ident.UserId.Email)
-	fmt.Fprintf(w, "    comment: %#v\n", ident.UserId.Comment)
-	fmt.Fprintln(w, "  },")
+	result := map[string]interface{}{
+		// basic key info
+		"id":          key.GetHexKeyID(),
+		"fingerprint": key.GetFingerprint(),
+		"algorithm":   cmd.algorithm(key),
+		"created_at":  prim.CreationTime.Format(time.RFC3339),
 
-	// flags
-	fmt.Fprintf(w, "  is_private: %#v,\n", key.IsPrivate())
-	fmt.Fprintf(w, "  is_expired: %#v,\n", key.IsExpired())
-	fmt.Fprintf(w, "  is_revoked: %#v,\n", key.IsRevoked())
-	fmt.Fprintf(w, "  can_verify: %#v,\n", key.CanVerify())
-	fmt.Fprintf(w, "  can_encrypt: %#v\n", key.CanEncrypt())
+		// user identity
+		"identity": map[string]string{
+			"name":    ident.UserId.Name,
+			"email":   ident.UserId.Email,
+			"comment": ident.UserId.Comment,
+		},
 
-	fmt.Fprintf(w, "}\n")
-	return nil
+		// flags
+		"is_private":  key.IsPrivate(),
+		"is_expired":  key.IsExpired(),
+		"is_revoked":  key.IsRevoked(),
+		"can_verify":  key.CanVerify(),
+		"can_encrypt": key.CanEncrypt(),
+	}
+
+	b, err := json.MarshalIndent(result, "", "    ")
+	if err != nil {
+		return fmt.Errorf("serialize JSON: %v", err)
+	}
+	_, err = cmd.cfg.Write(b)
+	return err
 }
 
 func (KeyInfo) algorithm(key *crypto.Key) string {

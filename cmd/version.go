@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"runtime/debug"
@@ -30,16 +31,21 @@ func (cmd Version) run() error {
 	if !ok {
 		return errors.New("cannot read build info")
 	}
-	w := cmd.cfg
-	fmt.Fprintf(w, "{\n")
-	fmt.Fprintf(w, "  go_version: %#v,\n", info.GoVersion)
-	fmt.Fprintf(w, "  revision:   %#v,\n", getBuildKey(info, "vcs.revision"))
-	fmt.Fprintf(w, "  time:       %#v,\n", getBuildKey(info, "vcs.time"))
-	fmt.Fprintf(w, "  os:         %#v,\n", getBuildKey(info, "GOOS"))
-	fmt.Fprintf(w, "  arch:       %#v,\n", getBuildKey(info, "GOARCH"))
-	fmt.Fprintf(w, "  now:        %#v,\n", crypto.GetTime().Format(time.RFC3339))
-	fmt.Fprintf(w, "}\n")
-	return nil
+	result := map[string]interface{}{
+		"go_version": info.GoVersion,
+		"revision":   getBuildKey(info, "vcs.revision"),
+		"time":       getBuildKey(info, "vcs.time"),
+		"os":         getBuildKey(info, "GOOS"),
+		"arch":       getBuildKey(info, "GOARCH"),
+		"now":        crypto.GetTime().Format(time.RFC3339),
+	}
+
+	b, err := json.MarshalIndent(result, "", "    ")
+	if err != nil {
+		return fmt.Errorf("serialize JSON: %v", err)
+	}
+	_, err = cmd.cfg.Write(b)
+	return err
 }
 
 func getBuildKey(info *debug.BuildInfo, key string) string {
