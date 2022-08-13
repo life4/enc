@@ -34,12 +34,20 @@ func (cmd KeyInfo) run() error {
 	}
 	prim := key.GetEntity().PrimaryKey
 	ident := key.GetEntity().PrimaryIdentity()
+
+	expirationStr := ""
+	ttl := ident.SelfSignature.KeyLifetimeSecs
+	if ttl != nil && *ttl != 0 {
+		expiration := prim.CreationTime.Add(time.Duration(*ttl) * time.Second)
+		expirationStr = expiration.Format(time.RFC3339)
+	}
 	result := map[string]interface{}{
 		// basic key info
 		"id":           key.GetHexKeyID(),
 		"fingerprint":  key.GetFingerprint(),
 		"algorithm":    cmd.algorithm(key),
 		"created_at":   prim.CreationTime.Format(time.RFC3339),
+		"expires_at":   expirationStr,
 		"fingerprints": key.GetSHA256Fingerprints(),
 
 		// user identity

@@ -39,7 +39,9 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 	c.Flags().StringVarP(&cmd.comment, "comment", "c", "", "a note to add to the key")
 	c.Flags().StringVarP(&cmd.ktype, "type", "t", "rsa", "type of the key")
 	c.Flags().IntVarP(&cmd.bits, "bits", "b", 4096, "size of RSA key in bits")
-	c.Flags().DurationVar(&cmd.ttl, "ttl", 0, "validity period of the key")
+	year := 24 * time.Hour * 365 * 2
+	// TODO: use another duration parser to support days, months, and years
+	c.Flags().DurationVar(&cmd.ttl, "ttl", year, "validity period of the key")
 	return c
 }
 
