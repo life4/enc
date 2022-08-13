@@ -56,12 +56,10 @@ func Command(cfg Config) *cobra.Command {
 	key.AddCommand(KeyArmor{cfg: cfg}.Command())
 	// $ enc key dearmor
 	key.AddCommand(KeyDearmor{cfg: cfg}.Command())
-	// $ enc key lock --pass
-	// ...
-	// $ enc key unlock --pass
-	// ...
-	// $ enc key fingerprints
-	// ...
+	// $ enc key lock
+	key.AddCommand(KeyLock{cfg: cfg}.Command())
+	// $ enc key unlock
+	key.AddCommand(KeyUnlock{cfg: cfg}.Command())
 	// $ enc key upload
 	// ...
 	// $ enc key download
