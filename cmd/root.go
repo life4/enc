@@ -34,9 +34,11 @@ func Command(cfg Config) *cobra.Command {
 		Short:   "Operations with signatures",
 	}
 	// $ enc sig create
-	root.AddCommand(SigCreate{cfg: cfg}.Command())
+	sig.AddCommand(SigCreate{cfg: cfg}.Command())
 	// $ enc sig verify
-	root.AddCommand(SigVerify{cfg: cfg}.Command())
+	sig.AddCommand(SigVerify{cfg: cfg}.Command())
+	// $ enc sig id
+	sig.AddCommand(SigID{cfg: cfg}.Command())
 	root.AddCommand(sig)
 
 	key := &cobra.Command{
@@ -80,6 +82,7 @@ func Command(cfg Config) *cobra.Command {
 	// $ enc keys add
 	// ...
 	// $ enc keys delete
+	// ...
 	root.AddCommand(keys)
 	return root
 }

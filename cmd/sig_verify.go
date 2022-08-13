@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
@@ -37,7 +38,12 @@ func (cmd SigVerify) run() error {
 		return fmt.Errorf("cannot read message: %v", err)
 	}
 
-	data, err := io.ReadAll(cmd.cfg)
+	f, err := os.Open(cmd.signature)
+	if err != nil {
+		return fmt.Errorf("open signature file: %v", err)
+	}
+	defer f.Close()
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return fmt.Errorf("read signature file: %v", err)
 	}
