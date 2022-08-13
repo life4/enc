@@ -33,16 +33,14 @@ func (cmd KeyInfo) run() error {
 		return fmt.Errorf("cannot read key: %v", err)
 	}
 	prim := key.GetEntity().PrimaryKey
-	w := cmd.cfg
-	fmt.Fprintf(w, "{\n")
-
 	ident := key.GetEntity().PrimaryIdentity()
 	result := map[string]interface{}{
 		// basic key info
-		"id":          key.GetHexKeyID(),
-		"fingerprint": key.GetFingerprint(),
-		"algorithm":   cmd.algorithm(key),
-		"created_at":  prim.CreationTime.Format(time.RFC3339),
+		"id":           key.GetHexKeyID(),
+		"fingerprint":  key.GetFingerprint(),
+		"algorithm":    cmd.algorithm(key),
+		"created_at":   prim.CreationTime.Format(time.RFC3339),
+		"fingerprints": key.GetSHA256Fingerprints(),
 
 		// user identity
 		"identity": map[string]string{
