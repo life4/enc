@@ -36,6 +36,7 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 	}
 	c.Flags().StringVarP(&cmd.name, "name", "n", "", "your full name")
 	c.Flags().StringVarP(&cmd.email, "email", "e", "", "your email address")
+	c.Flags().StringVarP(&cmd.comment, "comment", "c", "", "a note to add to the key")
 	c.Flags().StringVarP(&cmd.ktype, "type", "t", "rsa", "type of the key")
 	c.Flags().IntVarP(&cmd.bits, "bits", "b", 4096, "size of RSA key in bits")
 	c.Flags().DurationVar(&cmd.ttl, "ttl", 0, "validity period of the key")
