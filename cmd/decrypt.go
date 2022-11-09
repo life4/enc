@@ -47,6 +47,9 @@ func (cmd Decrypt) run() error {
 				return fmt.Errorf("cannot unlock key: %v", err)
 			}
 		}
+		if !key.IsPrivate() {
+			return errors.New("public key cannot be used to decrypt")
+		}
 		keyring, err := crypto.NewKeyRing(key)
 		if err != nil {
 			return fmt.Errorf("cannot create keyring: %v", err)
