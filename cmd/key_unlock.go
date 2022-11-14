@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,13 +22,11 @@ func (cmd KeyUnlock) Command() *cobra.Command {
 		},
 	}
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use")
+	c.MarkFlagRequired("password")
 	return c
 }
 
 func (cmd KeyUnlock) run() error {
-	if cmd.password == "" {
-		return errors.New("--password is required")
-	}
 	key, err := ReadKeyStdin(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("read key: %v", err)

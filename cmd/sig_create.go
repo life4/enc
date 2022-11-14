@@ -16,7 +16,7 @@ type SigCreate struct {
 func (cmd SigCreate) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "create",
-		Aliases: []string{"sign", "generate", "c", "n"},
+		Aliases: []string{"sign", "generate", "c", "n", "new"},
 		Args:    cobra.NoArgs,
 		Short:   "Sign the message",
 		RunE: func(_ *cobra.Command, args []string) error {
@@ -25,6 +25,8 @@ func (cmd SigCreate) Command() *cobra.Command {
 	}
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use to unlock the key")
 	c.Flags().StringVarP(&cmd.key, "key", "k", "", "path to the key to use")
+	c.MarkFlagRequired("key")
+	c.MarkFlagFilename("key")
 	return c
 }
 

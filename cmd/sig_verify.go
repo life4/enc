@@ -29,6 +29,10 @@ func (cmd SigVerify) Command() *cobra.Command {
 	c.Flags().StringVarP(&cmd.signature, "signature", "s", "", "path to the signature")
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use to unlock the key")
 	c.Flags().StringVarP(&cmd.key, "key", "k", "", "path to the key to use")
+	c.MarkFlagRequired("signature")
+	c.MarkFlagFilename("signature")
+	c.MarkFlagRequired("key")
+	c.MarkFlagFilename("key")
 	return c
 }
 
@@ -63,5 +67,10 @@ func (cmd SigVerify) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot create keyring: %v", err)
 	}
-	return keyring.VerifyDetached(message, signature, crypto.GetUnixTime())
+	err = keyring.VerifyDetached(message, signature, crypto.GetUnixTime())
+	if err != nil {
+		return err
+	}
+	fmt.Println("valid ✅")
+	return nil
 }

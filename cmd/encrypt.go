@@ -26,6 +26,7 @@ func (cmd Encrypt) Command() *cobra.Command {
 	}
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use")
 	c.Flags().StringVarP(&cmd.key, "key", "k", "", "path to the key to use")
+	c.MarkFlagFilename("key")
 	return c
 }
 
