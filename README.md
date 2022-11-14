@@ -93,7 +93,7 @@ enc key generate > private.key
 The key has quite a bit of information inside: your name and email, when it was generated, and expiration date. Of course, you can have a look yourself:
 
 ```bash
-cat private.key | ./enc key info
+cat private.key | enc key info
 ```
 
 ## Encrypt/decrypt with a key
@@ -101,13 +101,13 @@ cat private.key | ./enc key info
 Encrypting the message using the key is quite similar to encrypting it with a password. Just pass the path to the key to use:
 
 ```bash
-echo 'hello world' | ./enc encrypt --key private.key > encrypted.bin
+echo 'hello world' | enc encrypt --key private.key > encrypted.bin
 ```
 
 And similarly, decrypt:
 
 ```bash
-cat encrypted.bin | ./enc decrypt --key private.key
+cat encrypted.bin | enc decrypt --key private.key
 ```
 
 ## Use public key (generate and encrypt)
@@ -122,21 +122,21 @@ The idea is that you can make your public available for everyone on your website
 Extract the public key from the private key:
 
 ```bash
-cat private.key | ./enc key public > public.key
+cat private.key | enc key public > public.key
 ```
 
 Encrypt the message with public key:
 
 ```bash
-echo 'hello world' | ./enc encrypt --key public.key > encrypted.bin
+echo 'hello world' | enc encrypt --key public.key > encrypted.bin
 ```
 
 The message can be decrypted only using the private key:
 
 ```bash
-$ cat encrypted.bin | ./enc decrypt --key private.key
+$ cat encrypted.bin | enc decrypt --key private.key
 hello world
-$ cat encrypted.bin | ./enc decrypt --key public.key
+$ cat encrypted.bin | enc decrypt --key public.key
 Error: public key cannot be used to decrypt
 ```
 
@@ -149,13 +149,13 @@ If you use a private key to protect your files from evil hackers, the whole effo
 Lock the key with a password:
 
 ```bash
-cat private.key | ./enc key lock --password 'my secret pass' > locked.key
+cat private.key | enc key lock --password 'my secret pass' > locked.key
 ```
 
 You can always unlock it back if you change your mind:
 
 ```bash
-cat locked.key | ./enc key unlock --password 'my secret pass' > unlocked.key
+cat locked.key | enc key unlock --password 'my secret pass' > unlocked.key
 ```
 
 **Tip**: you can chain `enc key unlock` and `enc key lock` to change the password for the key. It's good to update your passwords time-to-time.
@@ -163,8 +163,8 @@ cat locked.key | ./enc key unlock --password 'my secret pass' > unlocked.key
 To use a locked key when using `encrypt` or `decrypt`, pass both `--key` and `--password` at the same time:
 
 ```bash
-echo 'hello world' | ./enc encrypt --key locked.key --password 'my secret pass' > encrypted.bin
-cat encrypted.bin | ./enc decrypt --key locked.key --password 'my secret pass'
+echo 'hello world' | enc encrypt --key locked.key --password 'my secret pass' > encrypted.bin
+cat encrypted.bin | enc decrypt --key locked.key --password 'my secret pass'
 ```
 
 ## Sign
@@ -174,7 +174,7 @@ From the math perspective, there is no difference between private and public key
 Create a new signature:
 
 ```bash
-cat encrypted.bin | ./enc sig create --key private.key > message.sig
+cat encrypted.bin | enc sig create --key private.key > message.sig
 ```
 
 **Tip**: signatures can be armored using `enc armor`.
@@ -182,9 +182,9 @@ cat encrypted.bin | ./enc sig create --key private.key > message.sig
 The signature will contain ID of the key that was used to generate it:
 
 ```bash
-$ cat message.sig | ./enc sig id
+$ cat message.sig | enc sig id
 91c1be98e13a8621
-$ cat private.key | ./enc key info | jq .id
+$ cat private.key | enc key info | jq .id
 "91c1be98e13a8621"
 ```
 
@@ -193,7 +193,7 @@ $ cat private.key | ./enc key info | jq .id
 To verify the signature, you'll need the signed message, the signature, and the public key:
 
 ```bash
-cat encrypted.bin | ./enc sig verify --key public.key --signature message.sig
+cat encrypted.bin | enc sig verify --key public.key --signature message.sig
 ```
 
 ## Experimental: work with GnuPG keyring
@@ -205,7 +205,7 @@ So far, we managed to only provide a few commands for public keys keyring. The p
 List all keys that GnuPG knows about:
 
 ```bash
-cat ~/.gnupg/pubring.gpg | ./enc keys list
+cat ~/.gnupg/pubring.gpg | enc keys list
 ```
 
 Red keys are expired or revoked, green keys are locked (password-protected), yellow keys aren't locked.
@@ -213,7 +213,7 @@ Red keys are expired or revoked, green keys are locked (password-protected), yel
 Get a key from the list (by ID or email):
 
 ```bash
-cat ~/.gnupg/pubring.gpg | ./enc keys get 514292cf25399377 > public.key
+cat ~/.gnupg/pubring.gpg | enc keys get 514292cf25399377 > public.key
 ```
 
 ## Type commands faster
