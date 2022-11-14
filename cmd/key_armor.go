@@ -19,6 +19,7 @@ func (cmd KeyArmor) Command() *cobra.Command {
 		Aliases: []string{"a"},
 		Args:    cobra.NoArgs,
 		Short:   "Armor key",
+		Example: "cat private.key | enc key armor > private-key.txt",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

@@ -15,9 +15,10 @@ type KeyDearmor struct {
 func (cmd KeyDearmor) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "dearmor",
-		Aliases: []string{"d"},
+		Aliases: []string{"d", "enarmor", "unarmor"},
 		Args:    cobra.NoArgs,
 		Short:   "Dearmor key",
+		Example: "cat private-key.txt | enc key dearmor > private.key",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},
