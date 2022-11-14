@@ -88,6 +88,8 @@ Passwords aren't that good for encrypting things. It's helpful when you want to 
 enc key generate > private.key
 ```
 
+**Tip**: make sure to limit permissions for the keys you store locally (`chmod 600 *.key`).
+
 The key has quite a bit of information inside: your name and email, when it was generated, and expiration date. Of course, you can have a look yourself:
 
 ```bash
@@ -138,6 +140,8 @@ $ cat encrypted.bin | ./enc decrypt --key public.key
 Error: public key cannot be used to decrypt
 ```
 
+**Tip**: keys can be armored using `enc armor`.
+
 ## Protect private key with password
 
 If you use a private key to protect your files from evil hackers, the whole effort is in vain if the key lies in a plain sight next to the files. It's like locking your door and then leaving the key in the keyhole. The solution is to encrypt ("lock") the private key itself with a password.
@@ -154,7 +158,7 @@ You can always unlock it back if you change your mind:
 cat locked.key | ./enc key unlock --password 'my secret pass' > unlocked.key
 ```
 
-Pro tip: you can chain `enc key unlock` and `enc key lock` to change the password for the key. it's good to update your passwords time-to-time.
+**Tip**: you can chain `enc key unlock` and `enc key lock` to change the password for the key. It's good to update your passwords time-to-time.
 
 To use a locked key when using `encrypt` or `decrypt`, pass both `--key` and `--password` at the same time:
 
@@ -165,12 +169,54 @@ cat encrypted.bin | ./enc decrypt --key locked.key --password 'my secret pass'
 
 ## Sign
 
-...
+From the math perspective, there is no difference between private and public key, they both can be used to encrypt messages that only can de decrypted by the other. Most of the security tools, including enc, artificially forbid using public key for decrypting messages because that's not how it should be used (encrypting message that anyone can decrypt is pointless). But what if we bypass that limitation? Then we could calculate the hash from the message, encrypt it using our private key, and publish alongside the message itself. Then anyone can take this "signature", decrypt it using public key, and check if the hash matches the message. It will match only if the message is not altered by anyone and the signature was encrypted using your private key. In other words, anyone can validate that the message was sent by you and wasn't altered. This is what signing is.
+
+Create a new signature:
+
+```bash
+cat encrypted.bin | ./enc sig create --key private.key > message.sig
+```
+
+**Tip**: signatures can be armored using `enc armor`.
+
+The signature will contain ID of the key that was used to generate it:
+
+```bash
+$ cat message.sig | ./enc sig id
+91c1be98e13a8621
+$ cat private.key | ./enc key info | jq .id
+"91c1be98e13a8621"
+```
 
 ## Verify signature
 
-...
+To verify the signature, you'll need the signed message, the signature, and the public key:
+
+```bash
+cat encrypted.bin | ./enc sig verify --key public.key --signature message.sig
+```
+
+## Experimental: work with GnuPG keyring
+
+There are many great tools that have integration with GnuPG. To name a few, git, some email clients, [pass](https://www.passwordstore.org/). Wouldn't it be great to integrate them with enc too? Well, that's not that easy. Many tools don't allow to specify a different path to gnupg binary to use, so all we left with is to integrate enc with gnupg directly: import, export, and list keys. This is what this section is about. How you can work with gnupg "keyring": the internal collection of keys that gnupg knows about.
+
+So far, we managed to only provide a few commands for public keys keyring. The private keyring is a bit trickier, different version of gnupg store it in a different way.
+
+List all keys that GnuPG knows about:
+
+```bash
+cat ~/.gnupg/pubring.gpg | ./enc keys list
+```
+
+Red keys are expired or revoked, green keys are locked (password-protected), yellow keys aren't locked.
+
+Get a key from the list (by ID or email):
+
+```bash
+cat ~/.gnupg/pubring.gpg | ./enc keys get 514292cf25399377 > public.key
+```
 
 ## Type commands faster
 
-...
+1. Under the hood, enc uses [cobra](https://github.com/spf13/cobra) Go library for describing CLI. And [cobra provides shell completion support](https://github.com/spf13/cobra/blob/main/shell_completions.md). If you run `enc completion bash -h` (or another shell name you use instead of `bash`), it will show you how you can activate autocomplete for your shell depending on your OS.
+1. Every command provides multiple aliases and shortcuts. For example, `enc key generate` can be abbreviated to `enc k g`. You can call the command with `-h` (`enc key generate -h`) to see what aliases it has.
