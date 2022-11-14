@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
-	"io"
 
-	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
 
@@ -28,15 +25,11 @@ func (cmd SigID) Command() *cobra.Command {
 }
 
 func (cmd SigID) run() error {
-	if !cmd.cfg.HasStdin() {
-		return errors.New("no signature passed into stdin")
-	}
-	data, err := io.ReadAll(cmd.cfg)
+	sig, err := ReadSigStdin(cmd.cfg)
 	if err != nil {
-		return fmt.Errorf("read signature from stdin: %v", err)
+		return fmt.Errorf("cannot read signature: %v", err)
 	}
-	signature := crypto.NewPGPSignature(data)
-	keyIDs, _ := signature.GetHexSignatureKeyIDs()
+	keyIDs, _ := sig.GetHexSignatureKeyIDs()
 	for _, keyID := range keyIDs {
 		fmt.Fprintln(cmd.cfg, keyID)
 	}

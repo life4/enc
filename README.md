@@ -1,6 +1,6 @@
 # enc
 
-Enc is a **modern and user-friendly alternative to gnupg**. It is easy to use, secure by default, and can encrypt and decrypt files using password or encryption keys, manage keys, and sign data. Our goal was to make encryption available to all engineers without the need to learn a lot of new words, concepts, and commands. It is the most beginner-friendly CLI tool for encryption, and keeping it that way is our top priority.
+Enc is a **modern and user-friendly alternative to [GnuPG](https://gnupg.org/)**. It is easy to use, secure by default, and can encrypt and decrypt files using password or encryption keys, manage keys, and sign data. Our goal was to make encryption available to all engineers without the need to learn a lot of new words, concepts, and commands. It is the most beginner-friendly CLI tool for encryption, and keeping it that way is our top priority.
 
 Features:
 
@@ -79,6 +79,8 @@ And to decrypt the armored message, you should dearmor it back into binary:
 ```bash
 cat encrypted.txt | enc dearmor | enc decrypt --password 'very secret password'
 ```
+
+**Tip**: you can omit `enc dearmor`. Enc will automatically detect if the input is armored and dearmor it.
 
 ## Generate a key
 
@@ -177,7 +179,7 @@ Create a new signature:
 cat encrypted.bin | enc sig create --key private.key > message.sig
 ```
 
-**Tip**: signatures can be armored using `enc armor`.
+**Tip**: signatures can be armored using `enc sig armor`.
 
 The signature will contain ID of the key that was used to generate it:
 
@@ -220,3 +222,4 @@ cat ~/.gnupg/pubring.gpg | enc keys get 514292cf25399377 > public.key
 
 1. Under the hood, enc uses [cobra](https://github.com/spf13/cobra) Go library for describing CLI. And [cobra provides shell completion support](https://github.com/spf13/cobra/blob/main/shell_completions.md). If you run `enc completion bash -h` (or another shell name you use instead of `bash`), it will show you how you can activate autocomplete for your shell depending on your OS.
 1. Every command provides multiple aliases and shortcuts. For example, `enc key generate` can be abbreviated to `enc k g`. You can call the command with `-h` (`enc key generate -h`) to see what aliases it has.
+1. Most of the flags can also be abbreviated to the first letter. For example, you can use `-p` instead of `--password` in all commands.

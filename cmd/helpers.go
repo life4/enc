@@ -101,10 +101,31 @@ func ReadPGPMessageStdin(cfg Config) (*crypto.PGPMessage, error) {
 	if bytes.HasPrefix(data, []byte("-----BEGIN PGP MESSAGE-----")) {
 		message, err := crypto.NewPGPMessageFromArmored(string(data))
 		if err != nil {
-			return nil, fmt.Errorf("unarmor the message: %v", err)
+			return nil, fmt.Errorf("unarmor: %v", err)
 		}
 		return message, nil
 	} else {
 		return crypto.NewPGPMessage(data), nil
+	}
+}
+
+func ReadSigStdin(cfg Config) (*crypto.PGPSignature, error) {
+	if !cfg.HasStdin() {
+		return nil, errors.New("no signature passed into stdin")
+	}
+	data, err := io.ReadAll(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("read from stdin: %v", err)
+	}
+	isArmored := bytes.HasPrefix(data, []byte("-----BEGIN PGP"))
+	if isArmored {
+		sig, err := crypto.NewPGPSignatureFromArmored(string(data))
+		if err != nil {
+			return nil, fmt.Errorf("unarmor: %v", err)
+		}
+		return sig, nil
+	} else {
+		sig := crypto.NewPGPSignature(data)
+		return sig, nil
 	}
 }
