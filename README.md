@@ -140,7 +140,7 @@ $ cat encrypted.bin | enc decrypt --key public.key
 Error: public key cannot be used to decrypt
 ```
 
-**Tip**: keys can be armored using `enc armor`.
+**Tip**: keys can be armored using `enc key armor`.
 
 ## Protect private key with password
 

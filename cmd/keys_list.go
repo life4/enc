@@ -16,6 +16,7 @@ func (cmd KeysList) Command() *cobra.Command {
 		Aliases: []string{"all", "l"},
 		Args:    cobra.NoArgs,
 		Short:   "Show list of all keys in keyring",
+		Example: "cat ~/.gnupg/pubring.gpg | enc keys list",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

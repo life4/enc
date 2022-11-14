@@ -17,6 +17,7 @@ func (cmd KeyUnlock) Command() *cobra.Command {
 		Aliases: []string{"u"},
 		Args:    cobra.NoArgs,
 		Short:   "Decode password-protected key",
+		Example: "cat locked.key | enc key unlock --password 'my pass' > unlocked.key",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

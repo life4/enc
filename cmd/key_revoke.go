@@ -32,8 +32,11 @@ func (cmd KeyRevoke) run() error {
 		return fmt.Errorf("cannot read key: %v", err)
 	}
 	entity := key.GetEntity()
-	entity.RevokeKey(packet.NoReason, "", nil)
-	b, _ := key.Serialize()
+	entity.RevokeKey(packet.NoReason, cmd.reason, nil)
+	b, err := key.Serialize()
+	if err != nil {
+		return fmt.Errorf("cannot revoke key: %v", err)
+	}
 	cmd.cfg.Write(b)
 	return nil
 }

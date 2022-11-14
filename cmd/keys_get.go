@@ -17,6 +17,7 @@ func (cmd KeysGet) Command() *cobra.Command {
 		Use:     "get",
 		Aliases: []string{"filter", "g", "export"},
 		Short:   "Get a specific key from keyring",
+		Example: "cat ~/.gnupg/pubring.gpg | enc keys get 514292cf25399377 > public.key",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(_ *cobra.Command, args []string) error {
 			cmd.query = args[0]

@@ -18,7 +18,8 @@ func (cmd Armor) Command() *cobra.Command {
 		Use:     "armor",
 		Aliases: []string{"a"},
 		Args:    cobra.NoArgs,
-		Short:   "Convert the message (or key) from binary to text",
+		Short:   "Convert the message (or signature) from binary to text",
+		Example: "cat encrypted.bin | enc armor > encrypted.txt",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

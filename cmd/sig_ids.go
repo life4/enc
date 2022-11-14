@@ -16,9 +16,10 @@ type SigID struct {
 func (cmd SigID) Command() *cobra.Command {
 	c := &cobra.Command{
 		Use:     "id",
-		Aliases: []string{"id", "info", "inspect", "i"},
+		Aliases: []string{"ids", "info", "inspect", "i"},
 		Args:    cobra.NoArgs,
 		Short:   "Show ID (or IDs) of key used to create signature",
+		Example: "cat message.sig | enc sig id",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

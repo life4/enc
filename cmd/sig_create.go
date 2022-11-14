@@ -19,6 +19,7 @@ func (cmd SigCreate) Command() *cobra.Command {
 		Aliases: []string{"sign", "generate", "c", "n", "new"},
 		Args:    cobra.NoArgs,
 		Short:   "Sign the message",
+		Example: "cat encrypted.bin | enc sig create --key private.key > message.sig",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

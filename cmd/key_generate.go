@@ -30,6 +30,7 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 		Aliases: []string{"create", "g"},
 		Args:    cobra.NoArgs,
 		Short:   "Generate new private key",
+		Example: "enc key generate > private.key",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

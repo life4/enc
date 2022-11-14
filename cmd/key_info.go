@@ -20,6 +20,7 @@ func (cmd KeyInfo) Command() *cobra.Command {
 		Aliases: []string{"inspect", "i"},
 		Args:    cobra.NoArgs,
 		Short:   "Show information about key",
+		Example: "cat private.key | enc key info",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

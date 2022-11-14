@@ -20,6 +20,7 @@ func (cmd Encrypt) Command() *cobra.Command {
 		Aliases: []string{"encode", "e", "rypt"},
 		Args:    cobra.NoArgs,
 		Short:   "Encrypt the message",
+		Example: "echo 'my msg' | enc encrypt --password 'my pass' > encrypted.bin",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

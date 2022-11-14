@@ -22,6 +22,7 @@ func (cmd SigVerify) Command() *cobra.Command {
 		Aliases: []string{"validate", "check", "v"},
 		Args:    cobra.NoArgs,
 		Short:   "Validate the message using signature",
+		Example: "cat encrypted.bin | enc sig verify --key public.key --signature message.sig",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

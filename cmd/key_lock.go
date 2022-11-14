@@ -17,6 +17,7 @@ func (cmd KeyLock) Command() *cobra.Command {
 		Aliases: []string{"l"},
 		Args:    cobra.NoArgs,
 		Short:   "Protect the key with password",
+		Example: "cat private.key | enc key lock --password 'my pass' > locked.key",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

@@ -20,6 +20,7 @@ func (cmd Decrypt) Command() *cobra.Command {
 		Aliases: []string{"decode", "d"},
 		Args:    cobra.NoArgs,
 		Short:   "Decrypt the message",
+		Example: "cat encrypted.bin | enc decrypt --password 'my pass'",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},
