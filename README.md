@@ -16,7 +16,7 @@ A few drawbacks to keep in mind:
 + Not all encryption algorithms supported by gnupg are supported by enc.
 + You'll still need import keys into gnupg to use tools that are integrated with gnupg, like git.
 
-## Installation
+## Install
 
 If you have Go:
 
@@ -94,7 +94,7 @@ The key has quite a bit of information inside: your name and email, when it was 
 cat private.key | ./enc key info
 ```
 
-## Encrypt with a key
+## Encrypt/decrypt with a key
 
 Encrypting the message using the key is quite similar to encrypting it with a password. Just pass the path to the key to use:
 
@@ -102,20 +102,65 @@ Encrypting the message using the key is quite similar to encrypting it with a pa
 echo 'hello world' | ./enc encrypt --key private.key > encrypted.bin
 ```
 
-## Decrypt with a key
+And similarly, decrypt:
 
-The "one more feature" of keys we mentioned before is that your private key actually contains 2 keys. Either of them can be used to decrypt what the other has encrypted. The full private key must be known only to you. And one of the two parts of the private key, called the "public key", is what you'll share with your friends. Your friends can use that key to decrypt messages you send to them or encrypt messages for you. And what's cool, nobody, even other friends with the same public key, can decrypt what your friends send to you. And nobody, even your friends, can generate a message that others will think is ncrypted by you. Pretty cool, huh?
+```bash
+cat encrypted.bin | ./enc decrypt --key private.key
+```
 
-Extract public key from private key:
+## Use public key (generate and encrypt)
+
+The "one more feature" of keys we mentioned before is that your private key actually contains 2 keys:
+
+1. Public key is used to encrypt messages.
+1. Private key is used to decrypt messages encrypted with the public key.
+
+The idea is that you can make your public available for everyone on your website, chats, etc. Anyone can take that public key, use it to encrypt a message, and send the encrypted message to you. And despite the public key being public, nobody but you can decrypt the message. Neat!
+
+Extract the public key from the private key:
 
 ```bash
 cat private.key | ./enc key public > public.key
 ```
 
-Decrypt the message:
+Encrypt the message with public key:
 
 ```bash
-cat encrypted.bin | ./enc decrypt --key public.key
+echo 'hello world' | ./enc encrypt --key public.key > encrypted.bin
+```
+
+The message can be decrypted only using the private key:
+
+```bash
+$ cat encrypted.bin | ./enc decrypt --key private.key
+hello world
+$ cat encrypted.bin | ./enc decrypt --key public.key
+Error: public key cannot be used to decrypt
+```
+
+## Protect private key with password
+
+If you use a private key to protect your files from evil hackers, the whole effort is in vain if the key lies in a plain sight next to the files. It's like locking your door and then leaving the key in the keyhole. The solution is to encrypt ("lock") the private key itself with a password.
+
+Lock the key with a password:
+
+```bash
+cat private.key | ./enc key lock --password 'my secret pass' > locked.key
+```
+
+You can always unlock it back if you change your mind:
+
+```bash
+cat locked.key | ./enc key unlock --password 'my secret pass' > unlocked.key
+```
+
+Pro tip: you can chain `enc key unlock` and `enc key lock` to change the password for the key. it's good to update your passwords time-to-time.
+
+To use a locked key when using `encrypt` or `decrypt`, pass both `--key` and `--password` at the same time:
+
+```bash
+echo 'hello world' | ./enc encrypt --key locked.key --password 'my secret pass' > encrypted.bin
+cat encrypted.bin | ./enc decrypt --key locked.key --password 'my secret pass'
 ```
 
 ## Sign
@@ -123,5 +168,9 @@ cat encrypted.bin | ./enc decrypt --key public.key
 ...
 
 ## Verify signature
+
+...
+
+## Type commands faster
 
 ...
