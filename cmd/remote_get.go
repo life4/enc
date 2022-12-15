@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -38,6 +39,16 @@ func (cmd RemoteGet) run() error {
 		cmd.cfg.Write(key)
 		return nil
 	}
+
+	key, err = cmd.readKeybase(cmd.query)
+	if err != nil {
+		return fmt.Errorf("cannot read key from keybase: %v", err)
+	}
+	if key != nil {
+		cmd.cfg.Write(key)
+		return nil
+	}
+
 	return errors.New("cannot find the key in any supported source")
 }
 
@@ -74,4 +85,20 @@ func (RemoteGet) readGithub(q string) ([]byte, error) {
 		}
 	}
 	return nil, nil
+}
+
+func (RemoteGet) readKeybase(q string) ([]byte, error) {
+	url := fmt.Sprintf("https://keybase.io/%s/pgp_keys.asc", q)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("read response: %v", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, nil
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %v", resp.StatusCode)
+	}
+	return io.ReadAll(resp.Body)
 }
