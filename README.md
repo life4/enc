@@ -215,7 +215,8 @@ Red keys are expired or revoked, green keys are locked (password-protected), yel
 Get a key from the list (by ID or email):
 
 ```bash
-cat ~/.gnupg/pubring.gpg | enc keys get 514292cf25399377 > public.key
+cat ~/.gnupg/pubring.gpg | enc keys get 0123456789abcdef > public.key
+cat ~/.gnupg/pubring.gpg | enc keys get mail@example.com > public.key
 ```
 
 ## Type commands faster

@@ -17,7 +17,7 @@ func (cmd KeyRevoke) Command() *cobra.Command {
 		Use:     "revoke",
 		Aliases: []string{"destroy", "r"},
 		Args:    cobra.NoArgs,
-		Short:   "Revoke the key",
+		Short:   "Generate key revokation file",
 		RunE: func(_ *cobra.Command, args []string) error {
 			return cmd.run()
 		},

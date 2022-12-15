@@ -72,7 +72,7 @@ func Command(cfg Config) *cobra.Command {
 
 	keys := &cobra.Command{
 		Use:     "keys",
-		Aliases: []string{"keychain", "keyring", "c", "r"},
+		Aliases: []string{"keychain", "keyring", "c"},
 		Short:   "Operations with key ring",
 	}
 	// $ enc keys list
@@ -84,6 +84,16 @@ func Command(cfg Config) *cobra.Command {
 	// $ enc keys delete
 	// ...
 	root.AddCommand(keys)
+
+	remote := &cobra.Command{
+		Use:     "remote",
+		Aliases: []string{"r", "server"},
+		Short:   "Operations with remote key servers",
+	}
+	// $ enc remote get
+	remote.AddCommand(RemoteGet{cfg: cfg}.Command())
+	root.AddCommand(remote)
+
 	return root
 }
 
