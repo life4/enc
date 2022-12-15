@@ -49,6 +49,15 @@ func (cmd RemoteGet) run() error {
 		return nil
 	}
 
+	key, err = cmd.readProtonmail(cmd.query)
+	if err != nil {
+		return fmt.Errorf("cannot read key from protonmail: %v", err)
+	}
+	if key != nil {
+		cmd.cfg.Write(key)
+		return nil
+	}
+
 	return errors.New("cannot find the key in any supported source")
 }
 
@@ -87,8 +96,17 @@ func (RemoteGet) readGithub(q string) ([]byte, error) {
 	return nil, nil
 }
 
-func (RemoteGet) readKeybase(q string) ([]byte, error) {
+func (cmd RemoteGet) readKeybase(q string) ([]byte, error) {
 	url := fmt.Sprintf("https://keybase.io/%s/pgp_keys.asc", q)
+	return cmd.readURL(url)
+}
+
+func (cmd RemoteGet) readProtonmail(q string) ([]byte, error) {
+	url := fmt.Sprintf("https://api.protonmail.ch/pks/lookup?op=get&search=%s", q)
+	return cmd.readURL(url)
+}
+
+func (RemoteGet) readURL(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("read response: %v", err)
