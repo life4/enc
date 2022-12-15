@@ -1,15 +1,20 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/sync/errgroup"
 )
+
+type Provider func(q string) ([]byte, error)
 
 type RemoteGet struct {
 	cfg   Config
@@ -31,34 +36,53 @@ func (cmd RemoteGet) Command() *cobra.Command {
 }
 
 func (cmd RemoteGet) run() error {
-	key, err := cmd.readGithub(cmd.query)
-	if err != nil {
-		return fmt.Errorf("cannot read key from github: %v", err)
+	found := false
+	keys := make(chan []byte)
+
+	// run all providers
+	providers := []Provider{
+		cmd.readGithub,
+		cmd.readKeybase,
+		cmd.readProtonmail,
 	}
-	if key != nil {
-		cmd.cfg.Write(key)
-		return nil
+	group := errgroup.Group{}
+	runner := func(p Provider) func() error {
+		return func() error {
+			key, err := p(cmd.query)
+			if key != nil {
+				keys <- key
+				found = true
+			}
+			return err
+		}
+	}
+	for _, p := range providers {
+		group.Go(runner(p))
 	}
 
-	key, err = cmd.readKeybase(cmd.query)
+	// print all the keys that the providers have found
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		for key := range keys {
+			cmd.cfg.Write(key)
+			cmd.cfg.Write([]byte{'\n'})
+		}
+		wg.Done()
+	}()
+
+	// wait for all providers and printer to finish
+	err := group.Wait()
+	close(keys)
+	wg.Wait()
 	if err != nil {
-		return fmt.Errorf("cannot read key from keybase: %v", err)
-	}
-	if key != nil {
-		cmd.cfg.Write(key)
-		return nil
+		return fmt.Errorf("cannot fetch the key: %v", err)
 	}
 
-	key, err = cmd.readProtonmail(cmd.query)
-	if err != nil {
-		return fmt.Errorf("cannot read key from protonmail: %v", err)
+	if !found {
+		return errors.New("cannot find the key in any supported source")
 	}
-	if key != nil {
-		cmd.cfg.Write(key)
-		return nil
-	}
-
-	return errors.New("cannot find the key in any supported source")
+	return nil
 }
 
 func (RemoteGet) readGithub(q string) ([]byte, error) {
@@ -88,12 +112,13 @@ func (RemoteGet) readGithub(q string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parse response: %v", err)
 	}
+	var buf bytes.Buffer
 	for _, key := range keys {
 		if key.Key != "" {
-			return []byte(key.Key), nil
+			buf.WriteString(key.Key)
 		}
 	}
-	return nil, nil
+	return io.ReadAll(&buf)
 }
 
 func (cmd RemoteGet) readKeybase(q string) ([]byte, error) {

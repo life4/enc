@@ -2,6 +2,8 @@ module github.com/life4/enc
 
 go 1.18
 
+require golang.org/x/sync v0.1.0
+
 require (
 	github.com/ProtonMail/go-crypto v0.0.0-20220113124808-70ae35bab23f // indirect
 	github.com/ProtonMail/go-mime v0.0.0-20220302105931-303f85f7fe0f // indirect
