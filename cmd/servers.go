@@ -9,18 +9,18 @@ import (
 	"time"
 )
 
-type Server interface {
+type Provider interface {
 	Name() string
 	Download(query string) ([]byte, error)
 }
 
-type ServerGithub struct{}
+type ProviderGithub struct{}
 
-func (ServerGithub) Name() string {
+func (ProviderGithub) Name() string {
 	return "github"
 }
 
-func (ServerGithub) Download(q string) ([]byte, error) {
+func (ProviderGithub) Download(q string) ([]byte, error) {
 	url := fmt.Sprintf("https://api.github.com/users/%s/gpg_keys", q)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -56,24 +56,24 @@ func (ServerGithub) Download(q string) ([]byte, error) {
 	return io.ReadAll(&buf)
 }
 
-type ServerKeybase struct{}
+type ProviderKeybase struct{}
 
-func (ServerKeybase) Name() string {
+func (ProviderKeybase) Name() string {
 	return "keybase"
 }
 
-func (ServerKeybase) Download(q string) ([]byte, error) {
+func (ProviderKeybase) Download(q string) ([]byte, error) {
 	url := fmt.Sprintf("https://keybase.io/%s/pgp_keys.asc", q)
 	return readURL(url)
 }
 
-type ServerProtonmail struct{}
+type ProviderProtonmail struct{}
 
-func (ServerProtonmail) Name() string {
+func (ProviderProtonmail) Name() string {
 	return "protonmail"
 }
 
-func (ServerProtonmail) Download(q string) ([]byte, error) {
+func (ProviderProtonmail) Download(q string) ([]byte, error) {
 	url := fmt.Sprintf("https://api.protonmail.ch/pks/lookup?op=get&search=%s", q)
 	return readURL(url)
 }

@@ -32,16 +32,16 @@ func (cmd RemoteGet) run() error {
 	found := false
 	keys := make(chan []byte)
 
-	// run downloads from all servers
-	servers := []Server{
-		ServerGithub{},
-		ServerKeybase{},
-		ServerProtonmail{},
+	// run downloads from all providers
+	providers := []Provider{
+		ProviderGithub{},
+		ProviderKeybase{},
+		ProviderProtonmail{},
 	}
 	group := errgroup.Group{}
-	runner := func(s Server) func() error {
+	runner := func(p Provider) func() error {
 		return func() error {
-			key, err := s.Download(cmd.query)
+			key, err := p.Download(cmd.query)
 			if key != nil {
 				keys <- key
 				found = true
@@ -49,11 +49,11 @@ func (cmd RemoteGet) run() error {
 			return err
 		}
 	}
-	for _, s := range servers {
-		group.Go(runner(s))
+	for _, p := range providers {
+		group.Go(runner(p))
 	}
 
-	// print all the keys that the servers returned
+	// print all the keys that the providers returned
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
@@ -64,7 +64,7 @@ func (cmd RemoteGet) run() error {
 		wg.Done()
 	}()
 
-	// wait for all servers and printer to finish
+	// wait for all providers and printer to finish
 	err := group.Wait()
 	close(keys)
 	wg.Wait()
