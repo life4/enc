@@ -14,6 +14,7 @@ type RemoteGet struct {
 	query        string
 	provider     string
 	gitlabDomain string
+	hkpDomain    string
 }
 
 func (cmd RemoteGet) Command() *cobra.Command {
@@ -33,7 +34,11 @@ func (cmd RemoteGet) Command() *cobra.Command {
 	)
 	c.Flags().StringVar(
 		&cmd.gitlabDomain, "gitlab-domain", "gitlab.com",
-		"domain name of GitLab server to use with gitlab provider",
+		"domain name of GitLab server to use with `gitlab` provider",
+	)
+	c.Flags().StringVar(
+		&cmd.hkpDomain, "hkp-domain", "keyserver.ubuntu.com",
+		"domain name of HKP key server to use with `hkp` provider",
 	)
 	return c
 }
@@ -94,9 +99,10 @@ func (cmd RemoteGet) run() error {
 func (cmd RemoteGet) providers() []Provider {
 	providers := []Provider{
 		ProviderGithub{},
+		ProviderGitlab{Domain: cmd.gitlabDomain},
+		ProviderHKP{Domain: cmd.hkpDomain},
 		ProviderKeybase{},
 		ProviderProtonmail{},
-		ProviderGitlab{Domain: cmd.gitlabDomain},
 	}
 	if cmd.provider == "" {
 		return providers

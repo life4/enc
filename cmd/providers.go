@@ -124,6 +124,19 @@ func (ProviderKeybase) Download(q string) ([]byte, error) {
 	return readURL(url)
 }
 
+type ProviderHKP struct {
+	Domain string
+}
+
+func (ProviderHKP) Name() string {
+	return "hkp"
+}
+
+func (p ProviderHKP) Download(q string) ([]byte, error) {
+	url := fmt.Sprintf("https://%s/pks/lookup?op=get&options=mr&search=0x%s", p.Domain, q)
+	return readURL(url)
+}
+
 type ProviderProtonmail struct{}
 
 func (ProviderProtonmail) Name() string {

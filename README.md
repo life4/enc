@@ -198,6 +198,20 @@ To verify the signature, you'll need the signed message, the signature, and the 
 cat encrypted.bin | enc sig verify --key public.key --signature message.sig
 ```
 
+## Download keys
+
+...
+
+Supported providers:
+
+1. `github`: get keys from [github.com](https://github.com/) by username.
+1. `gitlab`: get keys from [gitlab.com](https://gitlab.com/) (or a self-hosted GitLab instance) by username.
+1. `hkp`: get a key from a public GPG key server (by default, [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)) by its fingerprint. Downloading keys by author's email is not supported by design. HKP servers do not verify user emails, and so anyone can upload a key with any email address.
+1. `keybase`: get keys from [keybase.io](https://keybase.io/) by username.
+1. `protonmail`: get a key from [proton.me](https://proton.me/mail) by email address.
+
+[![xkcd: Public Key](https://imgs.xkcd.com/comics/public_key_2x.png)](https://xkcd.com/1553/)
+
 ## Experimental: work with GnuPG keyring
 
 There are many great tools that have integration with GnuPG. To name a few, git, some email clients, [pass](https://www.passwordstore.org/). Wouldn't it be great to integrate them with enc too? Well, that's not that easy. Many tools don't allow to specify a different path to gnupg binary to use, so all we left with is to integrate enc with gnupg directly: import, export, and list keys. This is what this section is about. How you can work with gnupg "keyring": the internal collection of keys that gnupg knows about.
