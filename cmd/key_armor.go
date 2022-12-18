@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ProtonMail/gopenpgp/v2/armor"
+	"github.com/ProtonMail/gopenpgp/v2/constants"
 	"github.com/spf13/cobra"
 )
 
@@ -34,10 +36,20 @@ func (cmd KeyArmor) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot read key: %v", err)
 	}
-	s, err := key.ArmorWithCustomHeaders(cmd.comment, ArmorHeaderVersion)
+	serialized, err := key.Serialize()
+	if err != nil {
+		return fmt.Errorf("cannot serialize key: %v", err)
+	}
+	header := constants.PublicKeyHeader
+	if key.IsPrivate() {
+		header = constants.PrivateKeyHeader
+	}
+	armored, err := armor.ArmorWithTypeAndCustomHeaders(
+		serialized, header, ArmorHeaderVersion, cmd.comment,
+	)
 	if err != nil {
 		return fmt.Errorf("cannot armor key: %v", err)
 	}
-	_, err = cmd.cfg.Write([]byte(s))
+	_, err = cmd.cfg.Write([]byte(armored))
 	return err
 }
