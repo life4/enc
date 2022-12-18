@@ -37,6 +37,7 @@ func (cmd RemoteGet) run() error {
 		ProviderGithub{},
 		ProviderKeybase{},
 		ProviderProtonmail{},
+		ProviderGitlab{Domain: "gitlab.com"},
 	}
 	group := errgroup.Group{}
 	runner := func(p Provider) func() error {
