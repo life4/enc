@@ -198,9 +198,9 @@ To verify the signature, you'll need the signed message, the signature, and the 
 cat encrypted.bin | enc sig verify --key public.key --signature message.sig
 ```
 
-## Download keys
+## Download key
 
-...
+There are many services that can host public GPG keys of their users. And enc can search these services and download the key for you.
 
 Supported providers:
 
@@ -209,6 +209,20 @@ Supported providers:
 1. `hkp`: get a key from a public GPG key server (by default, [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)) by its fingerprint. Downloading keys by author's email is not supported by design. HKP servers do not verify user emails, and so anyone can upload a key with any email address.
 1. `keybase`: get keys from [keybase.io](https://keybase.io/) by username.
 1. `protonmail`: get a key from [proton.me](https://proton.me/mail) by email address.
+
+In the list above, "keys" means that the provider can return multiple keys, not just one.
+
+Download a key of a proton mail user by their email:
+
+```bash
+enc remote get --provider=protonmail git@orsinium.dev
+```
+
+Search all providers and download a key by author's username:
+
+```bash
+enc remote get orsinium
+```
 
 [![xkcd: Public Key](https://imgs.xkcd.com/comics/public_key_2x.png)](https://xkcd.com/1553/)
 
