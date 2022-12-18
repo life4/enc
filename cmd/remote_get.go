@@ -10,8 +10,10 @@ import (
 )
 
 type RemoteGet struct {
-	cfg   Config
-	query string
+	cfg          Config
+	query        string
+	provider     string
+	gitlabDomain string
 }
 
 func (cmd RemoteGet) Command() *cobra.Command {
@@ -25,6 +27,14 @@ func (cmd RemoteGet) Command() *cobra.Command {
 			return cmd.run()
 		},
 	}
+	c.Flags().StringVarP(
+		&cmd.provider, "provider", "p", "",
+		"provider to use to get the key. All providers will be used if not specified",
+	)
+	c.Flags().StringVar(
+		&cmd.gitlabDomain, "gitlab-domain", "gitlab.com",
+		"domain name of GitLab server to use with gitlab provider",
+	)
 	return c
 }
 
@@ -33,12 +43,6 @@ func (cmd RemoteGet) run() error {
 	keys := make(chan []byte)
 
 	// run downloads from all providers
-	providers := []Provider{
-		ProviderGithub{},
-		ProviderKeybase{},
-		ProviderProtonmail{},
-		ProviderGitlab{Domain: "gitlab.com"},
-	}
 	group := errgroup.Group{}
 	runner := func(p Provider) func() error {
 		return func() error {
@@ -49,6 +53,10 @@ func (cmd RemoteGet) run() error {
 			}
 			return err
 		}
+	}
+	providers := cmd.providers()
+	if providers == nil {
+		return fmt.Errorf("unknown provider: %s", cmd.provider)
 	}
 	for _, p := range providers {
 		group.Go(runner(p))
@@ -74,7 +82,29 @@ func (cmd RemoteGet) run() error {
 	}
 
 	if !found {
-		return errors.New("cannot find the key in any supported source")
+		if cmd.provider == "" {
+			return errors.New("cannot find the key in any supported source")
+		} else {
+			return errors.New("cannot find the key")
+		}
+	}
+	return nil
+}
+
+func (cmd RemoteGet) providers() []Provider {
+	providers := []Provider{
+		ProviderGithub{},
+		ProviderKeybase{},
+		ProviderProtonmail{},
+		ProviderGitlab{Domain: cmd.gitlabDomain},
+	}
+	if cmd.provider == "" {
+		return providers
+	}
+	for _, p := range providers {
+		if p.Name() == cmd.provider {
+			return []Provider{p}
+		}
 	}
 	return nil
 }
