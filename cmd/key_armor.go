@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 
-	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/spf13/cobra"
 )
 
@@ -32,10 +30,7 @@ func (cmd KeyArmor) Command() *cobra.Command {
 }
 
 func (cmd KeyArmor) run() error {
-	if !cmd.cfg.HasStdin() {
-		return errors.New("no key passed into stdin")
-	}
-	key, err := crypto.NewKeyFromReader(cmd.cfg)
+	key, err := ReadKeyStdin(cmd.cfg)
 	if err != nil {
 		return fmt.Errorf("cannot read key: %v", err)
 	}
