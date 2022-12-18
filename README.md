@@ -219,6 +219,12 @@ cat ~/.gnupg/pubring.gpg | enc keys get 0123456789abcdef > public.key
 cat ~/.gnupg/pubring.gpg | enc keys get mail@example.com > public.key
 ```
 
+Add a key into GnuPG keyring:
+
+```bash
+gpg --import private.key
+```
+
 ## Type commands faster
 
 1. Under the hood, enc uses [cobra](https://github.com/spf13/cobra) Go library for describing CLI. And [cobra provides shell completion support](https://github.com/spf13/cobra/blob/main/shell_completions.md). If you run `enc completion bash -h` (or another shell name you use instead of `bash`), it will show you how you can activate autocomplete for your shell depending on your OS.
