@@ -1,10 +1,9 @@
 <div align="center">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="./logo-light.svg">
-  <img alt="enc logo" src="./logo-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="./logo-dark.svg" style="max-width: 50%">
+  <source media="(prefers-color-scheme: light)" srcset="./logo-light.svg" style="max-width: 50%">
+  <img alt="enc logo" src="./logo-light.svg" style="max-width: 50%">
 </picture>
-    <img src="./logo-dark.svg" style="max-width: 50%"/>
     <h1>enc</h1>
     <p><b>a modern and friendly alternative to GnuPG</b></p>
 </div>
