@@ -78,6 +78,7 @@ func (p ProviderGitlab) Download(q string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("send HTTP request: %v", err)
 	}
+	defer resp.Body.Close()
 	var keys []struct {
 		Key string `json:"key"`
 	}
@@ -103,6 +104,7 @@ func (p ProviderGitlab) getUserID(q string) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("send HTTP request: %v", err)
 	}
+	defer resp.Body.Close()
 	err = json.NewDecoder(resp.Body).Decode(&users)
 	if err != nil {
 		return 0, fmt.Errorf("parse response: %v", err)
