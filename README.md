@@ -10,21 +10,21 @@
 
 # What is enc?
 
-Enc is a CLI tool for encryption, a modern and friendly alternative to [GnuPG](https://gnupg.org/). It is easy to use, secure by default, and can encrypt and decrypt files using password or encryption keys, manage and download keys, and sign data. Our goal was to make encryption available to all engineers without the need to learn a lot of new words, concepts, and commands. It is the most beginner-friendly CLI tool for encryption, and keeping it that way is our top priority.
+Enc is a CLI tool for encryption, a modern and friendly alternative to [GnuPG](https://gnupg.org/). It is easy to use, secure by default and can encrypt and decrypt files using password or encryption keys, manage and download keys, and sign data. Our goal was to make encryption available to all engineers without the need to learn a lot of new words, concepts, and commands. It is the most beginner-friendly CLI tool for encryption, and keeping it that way is our top priority.
 
 ## Features
 
 + **Easy installation**. Grab the binary, and you're ready to go.
-+ **Friendly CLI**. We use well isolated subcommands to group together flags. There are no flags that can't be used together or must be used in a very specific combination.
++ **Friendly CLI**. We use well-isolated subcommands to group flags. There are no flags that can't be used together or must be used in a very specific combination.
 + **Well-documented**.
 + **Reliable**. Under the hood, enc uses [gopenpgp](github.com/ProtonMail/gopenpgp) library. The same library that powers ProtonMail.
-+ **UNIX-way**. Enc does only on job and does it well. And it plays nicely with any other tools. It reads all possible input from stdin and writes all possible output into stdout.
++ **UNIX-way**. Enc does only one job and does it well. And it plays nicely with any other tools. It reads all possible input from stdin and writes all possible output into stdout.
 + **CI-friendly**. There is no interactive prompt. All input is strictly stdin or CLI flags.
 
 A few drawbacks to keep in mind:
 
-+ Not all encryption algorithms supported by gnupg are supported by enc.
-+ You'll still need import keys into gnupg to use tools that are integrated with gnupg, like git.
++ Not all encryption algorithms supported by GnuPG are supported by enc.
++ You'll still need to import keys into GnuPG to use tools that are integrated with GnuPG, like git.
 
 ## Install
 
@@ -38,7 +38,7 @@ If you don't have Go, [grab the binary for your OS](https://github.com/life4/enc
 
 ## Encrypt
 
-"To encrypt something" means making it unreadable for someone without a secret. Only who knows the secret can read an encrypted message. Let's encrypt a text message using a password:
+"To encrypt something" means making it unreadable for someone without a secret. Only the one who knows the secret can read an encrypted message. Let's encrypt a text message using a password:
 
 ```bash
 echo 'my secret message' | enc encrypt --password 'very secret password' > encrypted.bin
@@ -52,11 +52,11 @@ echo 'my secret message' | enc encrypt --password 'very secret password' > encry
 cat encrypted.bin | enc decrypt --password 'very secret password'
 ```
 
-And you should see "my secret message" output. And if you pass an incorrect password, you'll see "wrong password or malformed message" error instead.
+And you should see the "my secret message" output. And if you pass an incorrect password, you'll see a "wrong password or malformed message" error instead.
 
 ## A note on secrets and shell history
 
-It's not safe to just plainly put your passwords like this as an argument to a command. Or use `echo` to write a secret message. All you input will be stored in the history of your terminal. For example, for bash it will be saved in `~/.bash_history`. There are a few helpful tips on how to avoid that:
+It's not safe to just plainly put your passwords like this as an argument to a command. Or to use `echo` to write a secret message. All your input will be stored in the history of your terminal. For example, for bash, it will be saved in `~/.bash_history`. There are a few helpful tips on how to avoid that:
 
 1. Start the command with a space. Then it will not be stored in the bash history. It should work for other shells as well.
 1. Use pass or another password manager: `enc encrypt --password=$(pass path/to/password)`.
@@ -64,13 +64,13 @@ It's not safe to just plainly put your passwords like this as an argument to a c
 
 ## Armor/dearmor the message
 
-Sometimes, you need to send the encrypted message as a text, in a place where binary input isn't supported. For example, in a chat. For that, enc provides "armoring" that turns any binary input into text:
+Sometimes, you need to send the encrypted message as text, in a place where binary input isn't supported. For example, in a chat. For that, enc provides "armoring" that turns any binary input into text:
 
 ```bash
 cat encrypted.bin | enc armor > encrypted.txt
 ```
 
-Now, inside of encrypted.txt you'll see something like this:
+Now, inside encrypted.txt you'll see something like this:
 
 ```text
 -----BEGIN PGP MESSAGE-----
@@ -94,7 +94,7 @@ cat encrypted.txt | enc dearmor | enc decrypt --password 'very secret password'
 
 ## Generate a key
 
-Passwords aren't that good for encrypting things. It's helpful when you want to send an encrypted file and then tell your friend the secret by phone (or shout it to him in the next room), but when you can get a bit more fancy, it's better to use a secret key. A key is a file that can be used to encrypt or decrypt messages. It's longer (and so safer) than a typical password and has one more feature we'll cover later. For now, let's just generate a new key:
+Passwords aren't that good for encrypting things. It's helpful when you want to send an encrypted file and then tell your friend the secret by phone (or shout it to him in the next room), but when you can get a bit fancier, it's better to use a secret key. A key is a file that can be used to encrypt or decrypt messages. It's longer (and so safer) than a typical password and has one more feature we'll cover later. For now, let's just generate a new key:
 
 ```bash
 enc key generate > private.key
@@ -137,7 +137,7 @@ Extract the public key from the private key:
 cat private.key | enc key public > public.key
 ```
 
-Encrypt the message with public key:
+Encrypt the message with the public key:
 
 ```bash
 echo 'hello world' | enc encrypt --key public.key > encrypted.bin
@@ -154,9 +154,9 @@ Error: public key cannot be used to decrypt
 
 **Tip**: keys can be armored using `enc key armor`.
 
-## Protect private key with password
+## Protect private key with a password
 
-If you use a private key to protect your files from evil hackers, the whole effort is in vain if the key lies in a plain sight next to the files. It's like locking your door and then leaving the key in the keyhole. The solution is to encrypt ("lock") the private key itself with a password.
+If you use a private key to protect your files from evil hackers, the whole effort is in vain if the key lies in plain sight next to the files. It's like locking your door and then leaving the key in the keyhole. The solution is to encrypt ("lock") the private key itself with a password.
 
 Lock the key with a password:
 
@@ -181,7 +181,7 @@ cat encrypted.bin | enc decrypt --key locked.key --password 'my secret pass'
 
 ## Sign
 
-From the math perspective, there is no difference between private and public key, they both can be used to encrypt messages that only can de decrypted by the other. Most of the security tools, including enc, artificially forbid using public key for decrypting messages because that's not how it should be used (encrypting message that anyone can decrypt is pointless). But what if we bypass that limitation? Then we could calculate the hash from the message, encrypt it using our private key, and publish alongside the message itself. Then anyone can take this "signature", decrypt it using public key, and check if the hash matches the message. It will match only if the message is not altered by anyone and the signature was encrypted using your private key. In other words, anyone can validate that the message was sent by you and wasn't altered. This is what signing is.
+From the math perspective, there is no difference between private and public keys, they both can be used to encrypt messages that only can de be decrypted by the other. Most of the security tools, including enc, artificially forbid using the public key for decrypting messages because that's not how it should be used (encrypting messages that anyone can decrypt is pointless). But what if we bypass that limitation? Then we could calculate the hash from the message, encrypt it using our private key, and publish it alongside the message itself. Then anyone can take this "signature", decrypt it using the public key, and check if the hash matches the message. It will match only if the message is not altered by anyone and the signature was encrypted using your private key. In other words, anyone can validate that the message was sent by you and wasn't altered. This is what signing is.
 
 Create a new signature:
 
@@ -191,7 +191,7 @@ cat encrypted.bin | enc sig create --key private.key > message.sig
 
 **Tip**: signatures can be armored using `enc sig armor`.
 
-The signature will contain ID of the key that was used to generate it:
+The signature will contain the ID of the key that was used to generate it:
 
 ```bash
 $ cat message.sig | enc sig id
@@ -210,13 +210,13 @@ cat encrypted.bin | enc sig verify --key public.key --signature message.sig
 
 ## Download key
 
-There are many services that can host public GPG keys of their users. And enc can search these services and download the key for you.
+Many services can host the public GPG keys of their users. And enc can search these services and download the key for you.
 
 Supported providers:
 
 1. `github`: get keys from [github.com](https://github.com/) by username.
 1. `gitlab`: get keys from [gitlab.com](https://gitlab.com/) (or a self-hosted GitLab instance) by username.
-1. `hkp`: get a key from a public GPG key server (by default, [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)) by its fingerprint. Downloading keys by author's email is not supported by design. HKP servers do not verify user emails, and so anyone can upload a key with any email address.
+1. `hkp`: get a key from a public GPG key server (by default, [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)) by its fingerprint. Downloading keys by author's email is not supported by design. HKP servers do not verify user emails, so anyone can upload a key with any email address.
 1. `keybase`: get keys from [keybase.io](https://keybase.io/) by username.
 1. `protonmail`: get a key from [proton.me](https://proton.me/mail) by email address.
 
@@ -238,9 +238,9 @@ enc remote get orsinium
 
 ## Experimental: work with GnuPG keyring
 
-There are many great tools that have integration with GnuPG. To name a few, git, some email clients, [pass](https://www.passwordstore.org/). Wouldn't it be great to integrate them with enc too? Well, that's not that easy. Many tools don't allow to specify a different path to gnupg binary to use, so all we left with is to integrate enc with gnupg directly: import, export, and list keys. This is what this section is about. How you can work with gnupg "keyring": the internal collection of keys that gnupg knows about.
+Many great tools have integration with GnuPG. To name a few, git, some email clients, [pass](https://www.passwordstore.org/). Wouldn't it be great to integrate them with enc too? Well, that's not that easy. Many tools don't allow specifying a different path to GnuPG binary to use, so all we are left with is to integrate enc with GnuPG directly: import, export, and list keys. This is what this section is about. How you can work with GnuPG "keyring": the internal collection of keys that GnuPG knows about.
 
-So far, we managed to only provide a few commands for public keys keyring. The private keyring is a bit trickier, different version of gnupg store it in a different way.
+So far, we managed to only provide a few commands for public keys' keyring. The private keyring is a bit trickier, different versions of GnuPG store it differently.
 
 List all keys that GnuPG knows about:
 
@@ -248,7 +248,7 @@ List all keys that GnuPG knows about:
 cat ~/.gnupg/pubring.gpg | enc keys list
 ```
 
-Red keys are expired or revoked, green keys are locked (password-protected), yellow keys aren't locked.
+Red keys are expired or revoked, green keys are locked (password-protected), and yellow keys aren't locked.
 
 Get a key from the list (by ID or email):
 
@@ -257,7 +257,7 @@ cat ~/.gnupg/pubring.gpg | enc keys get 0123456789abcdef > public.key
 cat ~/.gnupg/pubring.gpg | enc keys get mail@example.com > public.key
 ```
 
-Add a key into GnuPG keyring:
+Add a key into the GnuPG keyring:
 
 ```bash
 gpg --import private.key
