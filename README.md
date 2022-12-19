@@ -34,7 +34,7 @@ If you have Go:
 go install github.com/life4/enc@latest
 ```
 
-If you don't have Go, grab the binary for your OS and put it anywhere in your PATH.
+If you don't have Go, [grab the binary for your OS](https://github.com/life4/enc/releases) and put it anywhere in your PATH.
 
 ## Encrypt
 
