@@ -1,0 +1,25 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  install-goreleaser:
+    status:
+      - which goreleaser
+    cmds:
+      - go install github.com/goreleaser/goreleaser@latest
+  release:
+    desc: generate and upload a new release
+    deps:
+      - install-goreleaser
+    cmds:
+      - which gh
+      - test {{.CLI_ARGS}}
+      - git tag {{.CLI_ARGS}}
+      - goreleaser release --skip-publish --rm-dist
+      - git push --tags
+      - gh release create --generate-notes {{.CLI_ARGS}}
+      - gh release upload {{.CLI_ARGS}} ./dist/*.tar.gz ./dist/*_checksums.txt
