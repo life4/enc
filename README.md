@@ -1,8 +1,19 @@
-# ![enc](./logo.svg)
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./logo-light.svg">
+  <img alt="enc logo" src="./logo-light.svg">
+</picture>
+    <img src="./logo-dark.svg" style="max-width: 50%"/>
+    <h1>enc</h1>
+    <p><b>a modern and friendly alternative to GnuPG</b></p>
+</div>
 
-Enc is a **modern and user-friendly alternative to [GnuPG](https://gnupg.org/)**. It is easy to use, secure by default, and can encrypt and decrypt files using password or encryption keys, manage keys, and sign data. Our goal was to make encryption available to all engineers without the need to learn a lot of new words, concepts, and commands. It is the most beginner-friendly CLI tool for encryption, and keeping it that way is our top priority.
+# What is enc?
 
-Features:
+Enc is a CLI tool for encryption, a modern and friendly alternative to [GnuPG](https://gnupg.org/). It is easy to use, secure by default, and can encrypt and decrypt files using password or encryption keys, manage and download keys, and sign data. Our goal was to make encryption available to all engineers without the need to learn a lot of new words, concepts, and commands. It is the most beginner-friendly CLI tool for encryption, and keeping it that way is our top priority.
+
+## Features
 
 + **Easy installation**. Grab the binary, and you're ready to go.
 + **Friendly CLI**. We use well isolated subcommands to group together flags. There are no flags that can't be used together or must be used in a very specific combination.
