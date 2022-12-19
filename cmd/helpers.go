@@ -11,6 +11,12 @@ import (
 	"github.com/ProtonMail/gopenpgp/v2/crypto"
 )
 
+func Must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func ReadKeys(cfg Config) (*crypto.KeyRing, error) {
 	var r io.Reader
 	if cfg.HasStdin() {
@@ -40,7 +46,10 @@ func ReadKeys(cfg Config) (*crypto.KeyRing, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse key: %v", err)
 		}
-		keyring.AddKey(key)
+		err = keyring.AddKey(key)
+		if err != nil {
+			return nil, fmt.Errorf("add key into keyring: %v", err)
+		}
 	}
 	return keyring, nil
 }

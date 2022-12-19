@@ -23,7 +23,7 @@ func (cmd KeyLock) Command() *cobra.Command {
 		},
 	}
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use")
-	c.MarkFlagRequired("password")
+	Must(c.MarkFlagRequired("password"))
 	return c
 }
 

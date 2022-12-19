@@ -72,8 +72,8 @@ func (cmd RemoteGet) run() error {
 	wg.Add(1)
 	go func() {
 		for key := range keys {
-			cmd.cfg.Write(key)
-			cmd.cfg.Write([]byte{'\n'})
+			_, _ = cmd.cfg.Write(key)
+			_, _ = cmd.cfg.Write([]byte{'\n'})
 		}
 		wg.Done()
 	}()

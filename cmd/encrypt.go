@@ -27,7 +27,7 @@ func (cmd Encrypt) Command() *cobra.Command {
 	}
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use")
 	c.Flags().StringVarP(&cmd.key, "key", "k", "", "path to the key to use")
-	c.MarkFlagFilename("key")
+	Must(c.MarkFlagFilename("key"))
 	return c
 }
 
@@ -53,13 +53,16 @@ func (cmd Encrypt) run() error {
 			return fmt.Errorf("cannot create keyring: %v", err)
 		}
 		encrypted, err = keyring.Encrypt(message, nil)
+		if err != nil {
+			return fmt.Errorf("cannot encrypt the message: %v", err)
+		}
 	} else if cmd.password != "" {
 		encrypted, err = crypto.EncryptMessageWithPassword(message, []byte(cmd.password))
+		if err != nil {
+			return fmt.Errorf("cannot encrypt the message: %v", err)
+		}
 	} else {
 		return errors.New("a password or a key required")
-	}
-	if err != nil {
-		return fmt.Errorf("cannot encrypt the message: %v", err)
 	}
 	_, err = cmd.cfg.Write(encrypted.GetBinary())
 	return err

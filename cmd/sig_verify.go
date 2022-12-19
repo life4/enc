@@ -30,10 +30,10 @@ func (cmd SigVerify) Command() *cobra.Command {
 	c.Flags().StringVarP(&cmd.signature, "signature", "s", "", "path to the signature")
 	c.Flags().StringVarP(&cmd.password, "password", "p", "", "password to use to unlock the key")
 	c.Flags().StringVarP(&cmd.key, "key", "k", "", "path to the key to use")
-	c.MarkFlagRequired("signature")
-	c.MarkFlagFilename("signature")
-	c.MarkFlagRequired("key")
-	c.MarkFlagFilename("key")
+	Must(c.MarkFlagRequired("signature"))
+	Must(c.MarkFlagFilename("signature"))
+	Must(c.MarkFlagRequired("key"))
+	Must(c.MarkFlagFilename("key"))
 	return c
 }
 
