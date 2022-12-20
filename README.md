@@ -34,7 +34,15 @@ If you have Go:
 go install github.com/life4/enc@latest
 ```
 
-If you don't have Go, [grab the binary for your OS](https://github.com/life4/enc/releases) and put it anywhere in your PATH.
+If you don't have Go, [grab the binary for your OS](https://github.com/life4/enc/releases).
+
+On Linux (and OS X, probably) that's how you can make the executable globally available:
+
+1. Extract the binary: `tar -xf enc_*.tar.gz`
+1. Make it executable: `chmod +x enc`
+1. Place it in your PATH: `mv enc ~/.local/bin`
+1. Check if it works: `env version`
+1. If it says "command not found", run `echo $PATH` and check if `~/.local/bin` is there. If not, add into your `~/.bashrc` the following: `export PATH=$PATH:~/.local/bin`
 
 ## Encrypt
 
@@ -59,7 +67,7 @@ And you should see the "my secret message" output. And if you pass an incorrect 
 It's not safe to just plainly put your passwords like this as an argument to a command. Or to use `echo` to write a secret message. All your input will be stored in the history of your terminal. For example, for bash, it will be saved in `~/.bash_history`. There are a few helpful tips on how to avoid that:
 
 1. Start the command with a space. Then it will not be stored in the bash history. It should work for other shells as well.
-1. Use pass or another password manager: `enc encrypt --password=$(pass path/to/password)`.
+1. Use [pass](https://www.passwordstore.org/) or another password manager: `enc encrypt --password=$(pass path/to/password)`.
 1. Use `cat` without arguments as input: `enc encrypt --password=$(cat)`. It will read whatever you type in the terminal until you press `ctrl+d`.
 
 ## Armor/dearmor the message
@@ -208,7 +216,7 @@ To verify the signature, you'll need the signed message, the signature, and the 
 cat encrypted.bin | enc sig verify --key public.key --signature message.sig
 ```
 
-## Download key
+## Download public key
 
 Many services can host the public GPG keys of their users. And enc can search these services and download the key for you.
 
@@ -233,6 +241,14 @@ Search all providers and download a key by author's username:
 ```bash
 enc remote get orsinium
 ```
+
+## Publish public key
+
+To publish a key in a supported provider, us the official tools provided by the provider:
+
++ Upload to github.com using [gh](https://cli.github.com/): `gh gpg-key add public.key`.
++ Upload to gitlab.com using [glab](https://gitlab.com/gitlab-org/cli): [not supported yet](https://gitlab.com/gitlab-org/cli/-/issues/1052).
++ Upload to keybase.io using [keybase](https://book.keybase.io/docs/cli): `keybase pgp import -i private.key`.
 
 [![xkcd: Public Key](https://imgs.xkcd.com/comics/public_key_2x.png)](https://xkcd.com/1553/)
 
