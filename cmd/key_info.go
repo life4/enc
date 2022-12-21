@@ -42,11 +42,13 @@ func (cmd KeyInfo) run() error {
 		expiration := prim.CreationTime.Add(time.Duration(*ttl) * time.Second)
 		expirationStr = expiration.Format(time.RFC3339)
 	}
+	bits, _ := prim.BitLength()
 	result := map[string]interface{}{
 		// basic key info
 		"id":           key.GetHexKeyID(),
 		"fingerprint":  key.GetFingerprint(),
 		"algorithm":    cmd.algorithm(key),
+		"bits":         bits,
 		"created_at":   prim.CreationTime.Format(time.RFC3339),
 		"expires_at":   expirationStr,
 		"fingerprints": key.GetSHA256Fingerprints(),
