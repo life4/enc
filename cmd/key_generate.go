@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"bytes"
 	stdcrypto "crypto"
 	"errors"
 	"fmt"
+	"os/exec"
 	"os/user"
 	"strings"
 	"time"
@@ -51,6 +53,11 @@ func (cmd KeyGenerate) run() error {
 	if username == "" {
 		return errors.New("--name is required")
 	}
+	email := cmd.Email()
+	if email == "" {
+		return errors.New("--email is required")
+	}
+
 	alg := cmd.algorithm()
 	if alg == 0 {
 		return fmt.Errorf("unsupported key type: %v", cmd.ktype)
@@ -68,7 +75,7 @@ func (cmd KeyGenerate) run() error {
 		DefaultCompressionAlgo: packet.CompressionZLIB,
 	}
 
-	entity, err := openpgp.NewEntity(username, cmd.comment, cmd.email, cfg)
+	entity, err := openpgp.NewEntity(username, cmd.comment, email, cfg)
 	if err != nil {
 		return fmt.Errorf("cannot create entity: %v", err)
 	}
@@ -92,6 +99,20 @@ func (cmd KeyGenerate) Username() string {
 			return user.Name
 		}
 		return user.Username
+	}
+	return ""
+}
+
+func (cmd KeyGenerate) Email() string {
+	if cmd.email != "" {
+		return cmd.email
+	}
+	c := exec.Command("git", "config", "user.email")
+	var stdout bytes.Buffer
+	c.Stdout = &stdout
+	err := c.Run()
+	if err == nil {
+		return strings.TrimSpace(stdout.String())
 	}
 	return ""
 }
