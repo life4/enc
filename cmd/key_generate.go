@@ -57,16 +57,7 @@ func (cmd KeyGenerate) Command() *cobra.Command {
 
 func (cmd KeyGenerate) run() error {
 	username := cmd.Username()
-	if username == "" {
-		return errors.New("--name is required")
-	}
 	email := cmd.Email()
-	if email == "" {
-		return errors.New("--email is required")
-	}
-	if cmd.ttl == "" {
-		return errors.New("--ttl is required")
-	}
 	ttl, err := ParseDuration(cmd.ttl)
 	if err != nil {
 		return fmt.Errorf("cannot parse --ttl: %v", err)
@@ -151,6 +142,9 @@ func (cmd KeyGenerate) algorithm() packet.PublicKeyAlgorithm {
 }
 
 func ParseDuration(ttl string) (time.Duration, error) {
+	if ttl == "" {
+		return 0, nil
+	}
 	t, err := time.Parse("2006-01-02", ttl)
 	if err == nil {
 		return t.Sub(time.Now()), nil
