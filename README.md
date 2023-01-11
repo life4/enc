@@ -17,7 +17,7 @@ Enc is a CLI tool for encryption, a modern and friendly alternative to [GnuPG](h
 + **Easy installation**. Grab the binary, and you're ready to go.
 + **Friendly CLI**. We use well-isolated subcommands to group flags. There are no flags that can't be used together or must be used in a very specific combination.
 + **Well-documented**.
-+ **Reliable**. Under the hood, enc uses [gopenpgp](github.com/ProtonMail/gopenpgp) library. The same library that powers ProtonMail.
++ **Reliable**. Under the hood, enc uses [gopenpgp](https://github.com/ProtonMail/gopenpgp) library. The same library that powers ProtonMail.
 + **UNIX-way**. Enc does only one job and does it well. And it plays nicely with any other tools. It reads all possible input from stdin and writes all possible output into stdout.
 + **CI-friendly**. There is no interactive prompt. All input is strictly stdin or CLI flags.
 
