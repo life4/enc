@@ -8,6 +8,7 @@ linters:
     - rowserrcheck
     - sqlclosecheck
     - maligned
+    - depguard
   presets:
     - bugs
     # - comment
