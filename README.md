@@ -41,7 +41,7 @@ On Linux (and OS X, probably) that's how you can make the executable globally av
 1. Extract the binary: `tar -xf enc_*.tar.gz`
 1. Make it executable: `chmod +x enc`
 1. Place it in your PATH: `mv enc ~/.local/bin`
-1. Check if it works: `env version`
+1. Check if it works: `enc version`
 1. If it says "command not found", run `echo $PATH` and check if `~/.local/bin` is there. If not, add into your `~/.bashrc` the following: `export PATH=$PATH:~/.local/bin`
 
 ## Encrypt
