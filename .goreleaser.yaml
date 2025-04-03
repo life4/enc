@@ -8,9 +8,5 @@ builds:
       - linux
       - windows
       - darwin
-archives:
-  - replacements:
-      386: i386
-      amd64: x86_64
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
