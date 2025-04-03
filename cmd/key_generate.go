@@ -145,9 +145,9 @@ func ParseDuration(ttl string) (time.Duration, error) {
 	if ttl == "" {
 		return 0, nil
 	}
-	t, err := time.Parse("2006-01-02", ttl)
+	t, err := time.Parse(time.DateOnly, ttl)
 	if err == nil {
-		return t.Sub(time.Now()), nil
+		return time.Until(t), nil
 	}
 
 	var shift time.Duration

@@ -1,25 +1,59 @@
+version: "2"
 linters:
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - contextcheck
+    - durationcheck
+    - errchkjson
+    - fatcontext
+    - gocheckcompilerdirectives
+    - gochecksumtype
+    - gomodguard
+    - gosmopolitan
+    - loggercheck
+    - makezero
+    - musttag
+    - nilerr
+    - nilnesserr
+    - perfsprint
+    - prealloc
+    - protogetter
+    - reassign
+    - recvcheck
+    - spancheck
+    - testifylint
+    - zerologlint
   disable:
-    - gosec
-    - noctx
+    - depguard
     - errorlint
     - exhaustive
-    - scopelint
+    - gosec
+    - noctx
     - rowserrcheck
     - sqlclosecheck
-    - maligned
-    - depguard
-  presets:
-    - bugs
-    # - comment
-    # - complexity
-    # - error
-    - format
-    - import
-    # - metalinter
-    # - module
-    - performance
-    # - sql
-    # - style
-    # - test
-    # - unused
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
