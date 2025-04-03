@@ -146,7 +146,7 @@ func (ProviderProtonmail) Name() string {
 }
 
 func (ProviderProtonmail) Download(q string) ([]byte, error) {
-	url := fmt.Sprintf("https://api.protonmail.ch/pks/lookup?op=get&search=%s", url.QueryEscape(q))
+	url := "https://api.protonmail.ch/pks/lookup?op=get&search=" + url.QueryEscape(q)
 	return readURL(url)
 }
 
